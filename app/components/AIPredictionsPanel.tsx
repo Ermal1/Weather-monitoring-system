@@ -67,31 +67,31 @@ export function AIPredictionsPanel() {
         return (
           <div className="space-y-4">
             <div className="grid grid-cols-2 gap-4">
-              <div className="bg-red-50 p-3 rounded-lg">
+              <div className="bg-gradient-to-br from-rose-900/40 to-red-900/40 p-3 rounded-lg border border-rose-500/40 backdrop-blur-sm">
                 <div className="flex items-center justify-between">
-                  <span className="text-sm font-medium">Risk Trend</span>
-                  <Badge variant={predData.riskTrend === 'INCREASING' ? 'destructive' : 'default'}>
+                  <span className="text-sm font-medium text-rose-200">Risk Trend</span>
+                  <Badge variant={predData.riskTrend === 'INCREASING' ? 'destructive' : 'default'} className={predData.riskTrend === 'STABLE' ? "bg-emerald-500/20 text-emerald-300 border-emerald-400/40" : ""}>
                     {predData.riskTrend}
                   </Badge>
                 </div>
-                <div className="text-2xl font-bold text-red-600 mt-1">
+                <div className="text-2xl font-bold text-rose-300 mt-1">
                   {Math.round(predData.predictedRiskScore)}/100
                 </div>
               </div>
-              <div className="bg-blue-50 p-3 rounded-lg">
-                <div className="text-sm font-medium">Vulnerable Groups</div>
-                <div className="text-sm text-gray-600 mt-1">
+              <div className="bg-gradient-to-br from-cyan-900/40 to-blue-900/40 p-3 rounded-lg border border-cyan-500/40 backdrop-blur-sm">
+                <div className="text-sm font-medium text-cyan-200">Vulnerable Groups</div>
+                <div className="text-sm text-cyan-300/80 mt-1">
                   {predData.vulnerableGroupAlerts.slice(0, 2).join(', ')}
                 </div>
               </div>
             </div>
             
             <div>
-              <h4 className="font-semibold mb-2">AI Health Insights</h4>
+              <h4 className="font-semibold mb-2 text-emerald-300">AI Health Insights</h4>
               {predData.aiInsights.map((insight: string, idx: number) => (
-                <Alert key={idx} className="mb-2">
-                  <Lightbulb className="h-4 w-4" />
-                  <AlertDescription>{insight}</AlertDescription>
+                <Alert key={idx} className="mb-2 bg-gradient-to-r from-amber-900/40 to-yellow-900/40 border-amber-500/40 backdrop-blur-sm">
+                  <Lightbulb className="h-4 w-4 text-amber-400" />
+                  <AlertDescription className="text-amber-200">{insight}</AlertDescription>
                 </Alert>
               ))}
             </div>
@@ -102,30 +102,30 @@ export function AIPredictionsPanel() {
         return (
           <div className="space-y-4">
             <div className="grid grid-cols-2 gap-4">
-              <div className="bg-blue-50 p-3 rounded-lg">
+              <div className="bg-gradient-to-br from-cyan-900/40 to-blue-900/40 p-3 rounded-lg border border-cyan-500/40 backdrop-blur-sm">
                 <div className="flex items-center justify-between">
-                  <span className="text-sm font-medium">Congestion Trend</span>
-                  <Badge variant={predData.congestionTrend === 'WORSENING' ? 'destructive' : 'default'}>
+                  <span className="text-sm font-medium text-cyan-200">Congestion Trend</span>
+                  <Badge variant={predData.congestionTrend === 'WORSENING' ? 'destructive' : 'default'} className={predData.congestionTrend === 'IMPROVING' ? "bg-emerald-500/20 text-emerald-300 border-emerald-400/40" : ""}>
                     {predData.congestionTrend}
                   </Badge>
                 </div>
-                <div className="text-sm text-gray-600 mt-1">
+                <div className="text-sm text-cyan-300/80 mt-1">
                   Peak: {predData.peakHours.join(', ')}
                 </div>
               </div>
-              <div className="bg-green-50 p-3 rounded-lg">
-                <div className="text-sm font-medium">Emission Reduction</div>
-                <div className="text-2xl font-bold text-green-600 mt-1">
+              <div className="bg-gradient-to-br from-emerald-900/40 to-green-900/40 p-3 rounded-lg border border-emerald-500/40 backdrop-blur-sm">
+                <div className="text-sm font-medium text-emerald-200">Emission Reduction</div>
+                <div className="text-2xl font-bold text-emerald-300 mt-1">
                   {predData.emissionReduction}%
                 </div>
               </div>
             </div>
 
             <div>
-              <h4 className="font-semibold mb-2">Route Optimizations</h4>
+              <h4 className="font-semibold mb-2 text-teal-300">Route Optimizations</h4>
               <div className="grid gap-2">
                 {predData.routeOptimizations.slice(0, 3).map((route: string, idx: number) => (
-                  <div key={idx} className="bg-gray-50 p-2 rounded text-sm">
+                  <div key={idx} className="bg-slate-800/60 p-2 rounded text-sm text-slate-200 border border-teal-500/20 backdrop-blur-sm">
                     • {route}
                   </div>
                 ))}
@@ -138,30 +138,30 @@ export function AIPredictionsPanel() {
         return (
           <div className="space-y-4">
             <div className="grid grid-cols-2 gap-4">
-              <div className="bg-yellow-50 p-3 rounded-lg">
+              <div className="bg-gradient-to-br from-amber-900/40 to-yellow-900/40 p-3 rounded-lg border border-amber-500/40 backdrop-blur-sm">
                 <div className="flex items-center justify-between">
-                  <span className="text-sm font-medium">Efficiency Trend</span>
-                  <Badge variant={predData.efficiencyTrend === 'OPTIMAL' ? 'default' : 'secondary'}>
+                  <span className="text-sm font-medium text-amber-200">Efficiency Trend</span>
+                  <Badge variant={predData.efficiencyTrend === 'OPTIMAL' ? 'default' : 'secondary'} className={predData.efficiencyTrend === 'OPTIMAL' ? "bg-emerald-500/20 text-emerald-300 border-emerald-400/40" : "bg-slate-700/50 text-slate-300"}>
                     {predData.efficiencyTrend}
                   </Badge>
                 </div>
-                <div className="text-2xl font-bold text-yellow-600 mt-1">
+                <div className="text-2xl font-bold text-amber-300 mt-1">
                   {predData.predictedSavings}% Savings
                 </div>
               </div>
-              <div className="bg-green-50 p-3 rounded-lg">
-                <div className="text-sm font-medium">Natural Ventilation</div>
-                <div className="text-sm text-gray-600 mt-1">
+              <div className="bg-gradient-to-br from-emerald-900/40 to-green-900/40 p-3 rounded-lg border border-emerald-500/40 backdrop-blur-sm">
+                <div className="text-sm font-medium text-emerald-200">Natural Ventilation</div>
+                <div className="text-sm text-emerald-300/80 mt-1">
                   {predData.naturalVentilationHours.length} optimal hours
                 </div>
               </div>
             </div>
 
             <div>
-              <h4 className="font-semibold mb-2">HVAC Optimizations</h4>
+              <h4 className="font-semibold mb-2 text-amber-300">HVAC Optimizations</h4>
               <div className="grid gap-2">
                 {predData.hvacOptimizations.slice(0, 3).map((opt: string, idx: number) => (
-                  <div key={idx} className="bg-gray-50 p-2 rounded text-sm">
+                  <div key={idx} className="bg-slate-800/60 p-2 rounded text-sm text-slate-200 border border-amber-500/20 backdrop-blur-sm">
                     • {opt}
                   </div>
                 ))}
@@ -174,41 +174,41 @@ export function AIPredictionsPanel() {
         return (
           <div className="space-y-4">
             <div className="grid grid-cols-3 gap-3">
-              <div className="bg-green-50 p-3 rounded-lg text-center">
-                <div className="text-sm font-medium">Temperature</div>
-                <Badge variant="default" className="mt-1">
+              <div className="bg-gradient-to-br from-emerald-900/40 to-green-900/40 p-3 rounded-lg text-center border border-emerald-500/40 backdrop-blur-sm">
+                <div className="text-sm font-medium text-emerald-200">Temperature</div>
+                <Badge variant="default" className="mt-1 bg-emerald-500/20 text-emerald-300 border-emerald-400/40">
                   {predData.weatherForecasts?.temperature?.trend || predData.pollutantForecasts?.pm25?.trend || 'STABLE'}
                 </Badge>
-                <div className="text-xs text-gray-600 mt-1">
+                <div className="text-xs text-emerald-300/80 mt-1">
                   {Math.round((predData.weatherForecasts?.temperature?.confidence || predData.pollutantForecasts?.pm25?.confidence || 0.75) * 100)}% confidence
                 </div>
               </div>
-              <div className="bg-blue-50 p-3 rounded-lg text-center">
-                <div className="text-sm font-medium">Precipitation</div>
-                <Badge variant="secondary" className="mt-1">
+              <div className="bg-gradient-to-br from-cyan-900/40 to-blue-900/40 p-3 rounded-lg text-center border border-cyan-500/40 backdrop-blur-sm">
+                <div className="text-sm font-medium text-cyan-200">Precipitation</div>
+                <Badge variant="secondary" className="mt-1 bg-cyan-500/20 text-cyan-300 border-cyan-400/40">
                   {predData.weatherForecasts?.precipitation?.trend || predData.pollutantForecasts?.no2?.trend || 'STABLE'}
                 </Badge>
-                <div className="text-xs text-gray-600 mt-1">
+                <div className="text-xs text-cyan-300/80 mt-1">
                   {Math.round((predData.weatherForecasts?.precipitation?.confidence || predData.pollutantForecasts?.no2?.confidence || 0.75) * 100)}% confidence
                 </div>
               </div>
-              <div className="bg-orange-50 p-3 rounded-lg text-center">
-                <div className="text-sm font-medium">Wind Speed</div>
-                <Badge variant="outline" className="mt-1">
+              <div className="bg-gradient-to-br from-amber-900/40 to-orange-900/40 p-3 rounded-lg text-center border border-amber-500/40 backdrop-blur-sm">
+                <div className="text-sm font-medium text-amber-200">Wind Speed</div>
+                <Badge variant="outline" className="mt-1 bg-amber-500/20 text-amber-300 border-amber-400/40">
                   {predData.weatherForecasts?.windSpeed?.trend || predData.pollutantForecasts?.o3?.trend || 'STABLE'}
                 </Badge>
-                <div className="text-xs text-gray-600 mt-1">
+                <div className="text-xs text-amber-300/80 mt-1">
                   {Math.round((predData.weatherForecasts?.windSpeed?.confidence || predData.pollutantForecasts?.o3?.confidence || 0.75) * 100)}% confidence
                 </div>
               </div>
             </div>
 
             <div>
-              <h4 className="font-semibold mb-2">Weather Forecast AI Insights</h4>
+              <h4 className="font-semibold mb-2 text-teal-300">Weather Forecast AI Insights</h4>
               {predData.aiInsights.map((insight: string, idx: number) => (
-                <Alert key={idx} className="mb-2">
-                  <Brain className="h-4 w-4" />
-                  <AlertDescription>{insight}</AlertDescription>
+                <Alert key={idx} className="mb-2 bg-gradient-to-r from-teal-900/40 to-cyan-900/40 border-teal-500/40 backdrop-blur-sm">
+                  <Brain className="h-4 w-4 text-teal-400" />
+                  <AlertDescription className="text-teal-200">{insight}</AlertDescription>
                 </Alert>
               ))}
             </div>
@@ -221,13 +221,13 @@ export function AIPredictionsPanel() {
   }
 
   return (
-    <Card className="w-full">
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <Brain className="h-5 w-5" />
+    <Card className="w-full bg-slate-900/80 backdrop-blur-xl border-emerald-500/30 shadow-2xl">
+      <CardHeader className="bg-gradient-to-r from-emerald-600/20 via-teal-600/20 to-cyan-600/20 border-b border-emerald-500/30">
+        <CardTitle className="flex items-center gap-2 text-emerald-300">
+          <Brain className="h-5 w-5 text-emerald-400" />
           AI-Powered Predictive Analytics
           {predictions && (
-            <Badge variant="outline" className="ml-auto">
+            <Badge variant="outline" className="ml-auto bg-emerald-500/20 text-emerald-300 border-emerald-400/40">
               {Math.round(predictions.confidence * 100)}% Confidence
             </Badge>
           )}
@@ -238,13 +238,18 @@ export function AIPredictionsPanel() {
         <div className="grid grid-cols-4 gap-2">
           {predictionTypes.map((type) => {
             const IconComponent = type.icon
+            const isSelected = selectedType === type.id
             return (
               <Button
                 key={type.id}
-                variant={selectedType === type.id ? "default" : "outline"}
+                variant={isSelected ? "default" : "outline"}
                 size="sm"
                 onClick={() => setSelectedType(type.id as any)}
-                className="flex flex-col items-center gap-1 h-auto py-3"
+                className={`flex flex-col items-center gap-1 h-auto py-3 ${
+                  isSelected 
+                    ? "bg-gradient-to-r from-emerald-500 to-teal-500 text-white border-emerald-400/30 shadow-lg shadow-emerald-500/20" 
+                    : "bg-slate-800/50 text-slate-300 border-emerald-500/30 hover:bg-emerald-500/10 hover:text-emerald-300"
+                }`}
               >
                 <IconComponent className="h-4 w-4" />
                 <span className="text-xs">{type.label}</span>
@@ -257,7 +262,7 @@ export function AIPredictionsPanel() {
         <Button 
           onClick={() => generatePredictions(selectedType)}
           disabled={loading}
-          className="w-full"
+          className="w-full bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 text-white border-emerald-400/30 shadow-lg shadow-emerald-500/20"
         >
           {loading ? (
             <>
@@ -274,13 +279,13 @@ export function AIPredictionsPanel() {
 
         {/* Prediction Results */}
         {predictions && (
-          <div className="border-t pt-4">
+          <div className="border-t border-emerald-500/20 pt-4">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="font-semibold">
+              <h3 className="font-semibold text-emerald-300">
                 {predictionTypes.find(t => t.id === predictions.predictionType)?.label} Predictions
               </h3>
-              <div className="flex items-center gap-2 text-sm text-gray-600">
-                <Clock className="h-4 w-4" />
+              <div className="flex items-center gap-2 text-sm text-slate-400">
+                <Clock className="h-4 w-4 text-emerald-400" />
                 {predictions.timeframe} forecast
               </div>
             </div>
@@ -289,29 +294,29 @@ export function AIPredictionsPanel() {
 
             {/* DeepSeek AI Insights */}
             {predictions.deepseekInsights && (
-              <div className="mt-4 p-4 bg-gradient-to-r from-blue-50 to-purple-50 rounded-lg border border-blue-200">
+              <div className="mt-4 p-4 bg-gradient-to-r from-cyan-900/40 via-blue-900/40 to-violet-900/40 rounded-lg border border-cyan-500/40 backdrop-blur-sm">
                 <div className="flex items-center gap-2 mb-3">
-                  <Brain className="h-5 w-5 text-blue-600" />
-                  <span className="font-semibold text-blue-900">DeepSeek AI Enhanced Analysis</span>
-                  <Badge variant="outline" className="bg-blue-100 text-blue-700">
+                  <Brain className="h-5 w-5 text-cyan-400" />
+                  <span className="font-semibold text-cyan-300">DeepSeek AI Enhanced Analysis</span>
+                  <Badge variant="outline" className="bg-cyan-500/20 text-cyan-300 border-cyan-400/40">
                     AI-Powered
                   </Badge>
                 </div>
                 <div className="space-y-2">
                   {predictions.deepseekInsights.insights?.map((insight: any, idx: number) => (
-                    <Alert key={idx} className="bg-white/60">
-                      <Lightbulb className="h-4 w-4" />
-                      <AlertDescription>
-                        <strong>{insight.category}:</strong> {insight.insight}
+                    <Alert key={idx} className="bg-slate-800/60 border-amber-500/40 backdrop-blur-sm">
+                      <Lightbulb className="h-4 w-4 text-amber-400" />
+                      <AlertDescription className="text-amber-200">
+                        <strong className="text-amber-300">{insight.category}:</strong> {insight.insight}
                         {insight.severity && (
-                          <Badge variant="outline" className="ml-2">
+                          <Badge variant="outline" className="ml-2 bg-emerald-500/20 text-emerald-300 border-emerald-400/40">
                             {insight.severity}
                           </Badge>
                         )}
                       </AlertDescription>
                     </Alert>
                   )) || (
-                    <div className="text-sm text-blue-700">
+                    <div className="text-sm text-cyan-300">
                       {predictions.deepseekInsights.summary || 'Enhanced AI analysis applied to predictions'}
                     </div>
                   )}
@@ -319,8 +324,8 @@ export function AIPredictionsPanel() {
               </div>
             )}
 
-            <div className="mt-4 pt-4 border-t bg-gray-50 p-3 rounded-lg">
-              <div className="text-sm text-gray-600">
+            <div className="mt-4 pt-4 border-t border-emerald-500/20 bg-slate-800/50 p-3 rounded-lg backdrop-blur-sm">
+              <div className="text-sm text-slate-300">
                 <div className="flex justify-between">
                   <span>Data Points:</span>
                   <span>{predictions.dataPoints}</span>
@@ -336,7 +341,7 @@ export function AIPredictionsPanel() {
                 {predictions.metadata.enhancedWithDeepSeek && (
                   <div className="flex justify-between">
                     <span>DeepSeek AI:</span>
-                    <Badge variant="outline" className="bg-blue-100 text-blue-700">
+                    <Badge variant="outline" className="bg-cyan-500/20 text-cyan-300 border-cyan-400/40">
                       Enhanced
                     </Badge>
                   </div>

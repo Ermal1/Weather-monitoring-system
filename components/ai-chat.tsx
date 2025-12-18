@@ -138,44 +138,44 @@ export function AIChat() {
   }
 
   const getMessageIcon = (message: ChatMessage) => {
-    if (message.role === 'user') return <User className="w-4 h-4" />
+    if (message.role === 'user') return <User className="w-4 h-4 text-white" />
     
     switch (message.type) {
       case 'insight':
-        return <Lightbulb className="w-4 h-4 text-yellow-500" />
+        return <Lightbulb className="w-4 h-4 text-amber-400" />
       case 'analysis':
-        return <AlertCircle className="w-4 h-4 text-blue-500" />
+        return <AlertCircle className="w-4 h-4 text-cyan-400" />
       default:
-        return <Bot className="w-4 h-4 text-green-500" />
+        return <Bot className="w-4 h-4 text-emerald-400" />
     }
   }
 
   const getMessageStyle = (message: ChatMessage) => {
     if (message.role === 'user') {
-      return "bg-blue-500 text-white ml-12"
+      return "bg-gradient-to-r from-emerald-500 to-teal-500 text-white ml-12 border-emerald-400/30"
     }
     
     switch (message.type) {
       case 'insight':
-        return "bg-yellow-50 border-yellow-200"
+        return "bg-gradient-to-br from-amber-900/40 to-yellow-900/40 border-amber-500/40 text-amber-100 backdrop-blur-sm"
       case 'analysis':
-        return "bg-blue-50 border-blue-200"
+        return "bg-gradient-to-br from-cyan-900/40 to-blue-900/40 border-cyan-500/40 text-cyan-100 backdrop-blur-sm"
       default:
-        return "bg-gray-50 border-gray-200"
+        return "bg-gradient-to-br from-slate-800/60 to-slate-700/60 border-slate-600/40 text-slate-200 backdrop-blur-sm"
     }
   }
 
   return (
-    <Card className="min-h-[600px] flex flex-col">
-      <CardHeader className="bg-gradient-to-r from-blue-600 to-gray-600 text-white rounded-t-lg">
-        <CardTitle className="flex items-center gap-2">
+    <Card className="min-h-[600px] flex flex-col bg-slate-900/80 backdrop-blur-xl border-emerald-500/30 shadow-2xl">
+      <CardHeader className="bg-gradient-to-r from-emerald-600 via-teal-600 to-cyan-600 text-white rounded-t-lg">
+        <CardTitle className="flex items-center gap-2 text-white">
           <Sparkles className="w-5 h-5" />
           AI Weather Assistant
-          <Badge variant="secondary" className="bg-white/20 text-white border-white/30">
+          <Badge variant="secondary" className="bg-white/20 text-white border-white/30 backdrop-blur-sm">
             Powered by DeepSeek
           </Badge>
         </CardTitle>
-        <CardDescription className="text-green-100">
+        <CardDescription className="text-emerald-100">
           Real-time weather analysis and personalized weather forecasts
         </CardDescription>
       </CardHeader>
@@ -193,7 +193,7 @@ export function AIChat() {
                     {getMessageIcon(message)}
                     <div className="flex-1">
                       <p className="text-sm whitespace-pre-wrap break-words">{message.content}</p>
-                      <p className="text-xs text-gray-300 mt-1">
+                      <p className="text-xs text-slate-400 mt-1">
                         {message.timestamp.toLocaleTimeString()}
                       </p>
                     </div>
@@ -204,26 +204,26 @@ export function AIChat() {
 
             {isTyping && (
               <div className="flex justify-start">
-                <div className="max-w-[80%] rounded-lg p-3 border bg-gray-50 border-gray-200">
+                <div className="max-w-[80%] rounded-lg p-3 border bg-gradient-to-br from-slate-800/60 to-slate-700/60 border-slate-600/40 backdrop-blur-sm">
                   <div className="flex items-start gap-2">
-                    <Bot className="w-4 h-4 text-green-500" />
+                    <Bot className="w-4 h-4 text-emerald-400" />
                     <div className="flex-1">
                       {typingMessage ? (
                         <>
-                          <p className="text-sm whitespace-pre-wrap break-words">{typingMessage}</p>
+                          <p className="text-sm whitespace-pre-wrap break-words text-slate-200">{typingMessage}</p>
                           <div className="flex items-center gap-1 mt-1">
-                            <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></div>
-                            <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
-                            <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
+                            <div className="w-2 h-2 bg-emerald-400 rounded-full animate-bounce"></div>
+                            <div className="w-2 h-2 bg-emerald-400 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
+                            <div className="w-2 h-2 bg-emerald-400 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
                           </div>
                         </>
                       ) : (
                         <>
-                          <p className="text-sm text-gray-600 italic">Thinking...</p>
+                          <p className="text-sm text-slate-300 italic">Thinking...</p>
                           <div className="flex items-center gap-1 mt-1">
-                            <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></div>
-                            <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
-                            <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
+                            <div className="w-2 h-2 bg-emerald-400 rounded-full animate-bounce"></div>
+                            <div className="w-2 h-2 bg-emerald-400 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
+                            <div className="w-2 h-2 bg-emerald-400 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
                           </div>
                         </>
                       )}
@@ -236,15 +236,15 @@ export function AIChat() {
           </div>
         </ScrollArea>
 
-        <div className="p-4 border-t bg-gray-50">
-          <p className="text-sm text-gray-600 mb-2">Quick questions:</p>
+        <div className="p-4 border-t border-emerald-500/20 bg-slate-800/40 backdrop-blur-sm">
+          <p className="text-sm text-emerald-200 mb-2 font-medium">Quick questions:</p>
           <div className="flex flex-wrap gap-2">
             {quickQuestions.map((question, index) => (
               <Button
                 key={index}
                 variant="outline"
                 size="sm"
-                className="text-xs"
+                className="text-xs bg-slate-700/50 text-slate-200 border-emerald-500/30 hover:bg-emerald-500/20 hover:text-emerald-200 hover:border-emerald-400/50"
                 onClick={() => handleSend(question)}
                 disabled={isLoading}
               >
@@ -254,7 +254,7 @@ export function AIChat() {
           </div>
         </div>
 
-        <div className="p-4 border-t">
+        <div className="p-4 border-t border-emerald-500/20 bg-slate-800/40 backdrop-blur-sm">
           <div className="flex gap-2">
             <Input
               ref={inputRef}
@@ -263,12 +263,14 @@ export function AIChat() {
               onKeyPress={handleKeyPress}
               placeholder="Ask about weather, forecasts, or meteorological data..."
               disabled={isLoading}
-              className="flex-1"
+              className="flex-1 bg-slate-700/50 !text-slate-200 border-emerald-500/30 placeholder:text-slate-400 focus:border-emerald-400/50 focus:ring-emerald-500/20 focus-visible:ring-emerald-500/20 focus-visible:ring-offset-0"
+              style={{ color: '#e2e8f0' }}
             />
             <Button 
               onClick={() => handleSend()} 
               disabled={isLoading || !input.trim()}
               size="icon"
+              className="bg-emerald-500 hover:bg-emerald-600 text-white border-emerald-400/30 shadow-lg shadow-emerald-500/20"
             >
               {isLoading ? (
                 <Loader2 className="w-4 h-4 animate-spin" />

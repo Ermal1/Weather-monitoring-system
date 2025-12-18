@@ -61,78 +61,78 @@ function AnalyticsDashboard() {
 
   return (
     <div className="space-y-6">
-      <Card className="bg-gradient-to-r from-blue-600 to-purple-600 text-white">
+      <Card className="bg-gradient-to-r from-emerald-600 via-teal-600 to-cyan-600 text-white shadow-2xl shadow-emerald-500/30 border-emerald-400/40">
         <CardHeader>
           <CardTitle className="flex items-center justify-between text-white">
               📊 Real-Time Analytics Dashboard
             <Button
               onClick={() => setIsRunning(!isRunning)}
               variant={isRunning ? "destructive" : "secondary"}
-              className={isRunning ? "bg-red-500 hover:bg-red-600" : "bg-white text-blue-600 hover:bg-gray-100"}
+              className={isRunning ? "bg-rose-600 hover:bg-rose-700 shadow-lg shadow-rose-500/50" : "bg-white text-emerald-600 hover:bg-emerald-50 shadow-lg"}
             >
               {isRunning ? "🛑 Stop Analytics" : "▶️ Start Analytics"}
             </Button>
           </CardTitle>
-          <CardDescription className="text-blue-100">
+          <CardDescription className="text-emerald-100">
             Live processing of weather data with anomaly detection, predictive analytics, and intelligent caching
           </CardDescription>
         </CardHeader>
       </Card>
 
       {!isRunning ? (
-        <Card className="border-dashed border-2 border-gray-300">
+        <Card className="border-dashed border-2 border-emerald-500/30 bg-slate-900/60 backdrop-blur-xl">
           <CardContent className="text-center py-12">
             <div className="text-6xl mb-4">⚡</div>
-            <h3 className="text-xl font-semibold mb-2">Analytics Engine Offline</h3>
-            <p className="text-gray-500 mb-6">Click "Start Analytics" to begin real-time big data processing</p>
-            <div className="grid grid-cols-3 gap-4 text-sm text-gray-400">
-              <div>🔍 Anomaly Detection</div>
-              <div>📈 Predictive Analytics</div>
-              <div>💾 Smart Caching</div>
+            <h3 className="text-xl font-semibold mb-2 text-emerald-300">Analytics Engine Offline</h3>
+            <p className="text-slate-400 mb-6">Click "Start Analytics" to begin real-time big data processing</p>
+            <div className="grid grid-cols-3 gap-4 text-sm text-slate-500">
+              <div className="p-2 rounded-lg bg-emerald-500/10 border border-emerald-500/20">🔍 Anomaly Detection</div>
+              <div className="p-2 rounded-lg bg-teal-500/10 border border-teal-500/20">📈 Predictive Analytics</div>
+              <div className="p-2 rounded-lg bg-cyan-500/10 border border-cyan-500/20">💾 Smart Caching</div>
             </div>
           </CardContent>
         </Card>
       ) : !dashboardData ? (
-        <Card>
+        <Card className="bg-slate-900/60 backdrop-blur-xl border-emerald-500/30">
           <CardContent className="text-center py-12">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
-            <h3 className="text-lg font-semibold mb-2">Initializing Analytics Engine</h3>
-            <p className="text-gray-500 mb-4">Connecting to Weather API and processing initial data...</p>
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-emerald-500 mx-auto mb-4"></div>
+            <h3 className="text-lg font-semibold mb-2 text-emerald-300">Initializing Analytics Engine</h3>
+            <p className="text-slate-400 mb-4">Connecting to Weather API and processing initial data...</p>
             <div className="flex justify-center space-x-4 text-sm">
-              <span className="text-green-600">✓ TanStack Query</span>
-              <span className="text-green-600">✓ Supabase Cache</span>
-              <span className="text-yellow-600">⏳ Weather API</span>
+              <span className="text-emerald-400">✓ TanStack Query</span>
+              <span className="text-emerald-400">✓ Supabase Cache</span>
+              <span className="text-amber-400">⏳ Weather API</span>
             </div>
           </CardContent>
         </Card>
       ) : (
         <div className="space-y-6">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <Card className="bg-gradient-to-br from-blue-50 to-blue-100 border-blue-200">
+            <Card className="bg-gradient-to-br from-cyan-500/20 to-blue-500/20 border-cyan-400/40 backdrop-blur-xl shadow-lg shadow-cyan-500/10">
               <CardContent className="p-4">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-sm font-medium text-blue-700">API Calls Today</p>
-                    <p className="text-2xl font-bold text-blue-900">
+                    <p className="text-sm font-medium text-cyan-300">API Calls Today</p>
+                    <p className="text-2xl font-bold text-cyan-200">
                       {dashboardData.systemMetrics?.apiCallsToday || 0}
                     </p>
                   </div>
                   <div className="text-2xl">📡</div>
                 </div>
                 <div className="mt-2">
-                  <div className="text-xs text-blue-600">
+                  <div className="text-xs text-cyan-400/80">
                     Data Rate: {realtimeStats?.processingRate || 0} pts/sec
                   </div>
                 </div>
               </CardContent>
             </Card>
 
-            <Card className="bg-gradient-to-br from-green-50 to-green-100 border-green-200">
+            <Card className="bg-gradient-to-br from-emerald-500/20 to-teal-500/20 border-emerald-400/40 backdrop-blur-xl shadow-lg shadow-emerald-500/10">
               <CardContent className="p-4">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-sm font-medium text-green-700">Alerts Generated</p>
-                    <p className="text-2xl font-bold text-green-900">
+                    <p className="text-sm font-medium text-emerald-300">Alerts Generated</p>
+                    <p className="text-2xl font-bold text-emerald-200">
                       {dashboardData.systemMetrics?.alertsGenerated || 0}
                     </p>
                   </div>
@@ -185,11 +185,11 @@ function AnalyticsDashboard() {
             </Card>
           </div>
 
-          <Card>
+          <Card className="bg-slate-900/60 backdrop-blur-xl border-emerald-500/30 shadow-2xl">
             <CardHeader>
-              <CardTitle className="flex items-center gap-2">
+              <CardTitle className="flex items-center gap-2 text-emerald-300">
                   🔄 Live Processing Status
-                <Badge variant="default" className="bg-green-100 text-green-800 animate-pulse">
+                <Badge variant="default" className="bg-emerald-500/20 text-emerald-300 border-emerald-400/40 animate-pulse backdrop-blur-sm">
                   ACTIVE
                 </Badge>
               </CardTitle>
@@ -203,62 +203,62 @@ function AnalyticsDashboard() {
                       {dashboardData.dataSourceStatus?.weatherAPI ? "Connected" : "Offline"}
                     </Badge>
                   </h4>
-                  <div className="space-y-2 text-sm">
-                    <div className="flex items-center gap-2">
-                      <div className={`w-2 h-2 rounded-full ${dashboardData.dataSourceStatus?.weatherAPI ? 'bg-green-500' : 'bg-red-500'}`}></div>
+                  <div className="space-y-2 text-sm text-slate-300">
+                    <div className="flex items-center gap-2 p-2 rounded-lg bg-slate-800/50 border border-emerald-500/10">
+                      <div className={`w-2 h-2 rounded-full ${dashboardData.dataSourceStatus?.weatherAPI ? 'bg-emerald-400 animate-pulse' : 'bg-rose-400'}`}></div>
                       Weather API ({dashboardData.bigDataVolume?.citiesMonitored || 0} cities)
                     </div>
-                    <div className="flex items-center gap-2">
-                      <div className={`w-2 h-2 rounded-full ${dashboardData.dataSourceStatus?.supabaseDB ? 'bg-green-500' : 'bg-red-500'}`}></div>
+                    <div className="flex items-center gap-2 p-2 rounded-lg bg-slate-800/50 border border-teal-500/10">
+                      <div className={`w-2 h-2 rounded-full ${dashboardData.dataSourceStatus?.supabaseDB ? 'bg-teal-400 animate-pulse' : 'bg-rose-400'}`}></div>
                       Supabase Cache Database
                     </div>
-                    <div className="flex items-center gap-2">
-                      <div className={`w-2 h-2 rounded-full ${dashboardData.dataSourceStatus?.internalSensors ? 'bg-green-500' : 'bg-gray-400'}`}></div>
+                    <div className="flex items-center gap-2 p-2 rounded-lg bg-slate-800/50 border border-cyan-500/10">
+                      <div className={`w-2 h-2 rounded-full ${dashboardData.dataSourceStatus?.internalSensors ? 'bg-cyan-400 animate-pulse' : 'bg-slate-500'}`}></div>
                       Internal Sensor Network
                     </div>
                   </div>
                 </div>
 
                 <div>
-                  <h4 className="font-semibold mb-3">⚙️ Processing Pipeline</h4>
-                  <div className="space-y-2 text-sm">
-                    <div className="flex justify-between">
+                  <h4 className="font-semibold mb-3 text-teal-300">⚙️ Processing Pipeline</h4>
+                  <div className="space-y-2 text-sm text-slate-300">
+                    <div className="flex justify-between p-2 rounded-lg bg-slate-800/50 border border-cyan-500/10">
                       <span>Data Ingestion</span>
-                      <Badge variant="default" className="bg-blue-100 text-blue-800">Active</Badge>
+                      <Badge variant="default" className="bg-cyan-500/20 text-cyan-300 border-cyan-400/40">Active</Badge>
                     </div>
-                    <div className="flex justify-between">
+                    <div className="flex justify-between p-2 rounded-lg bg-slate-800/50 border border-violet-500/10">
                       <span>Anomaly Detection</span>
-                      <Badge variant="default" className="bg-purple-100 text-purple-800">Running</Badge>
+                      <Badge variant="default" className="bg-violet-500/20 text-violet-300 border-violet-400/40">Running</Badge>
                     </div>
-                    <div className="flex justify-between">
+                    <div className="flex justify-between p-2 rounded-lg bg-slate-800/50 border border-emerald-500/10">
                       <span>Predictive Analysis</span>
-                      <Badge variant="default" className="bg-green-100 text-green-800">Computing</Badge>
+                      <Badge variant="default" className="bg-emerald-500/20 text-emerald-300 border-emerald-400/40">Computing</Badge>
                     </div>
-                    <div className="flex justify-between">
+                    <div className="flex justify-between p-2 rounded-lg bg-slate-800/50 border border-amber-500/10">
                       <span>Cache Management</span>
-                      <Badge variant="default" className="bg-orange-100 text-orange-800">Optimizing</Badge>
+                      <Badge variant="default" className="bg-amber-500/20 text-amber-300 border-amber-400/40">Optimizing</Badge>
                     </div>
                   </div>
                 </div>
 
                 <div>
-                  <h4 className="font-semibold mb-3">📈 Performance Metrics</h4>
-                  <div className="space-y-2 text-sm">
-                    <div className="flex justify-between">
+                  <h4 className="font-semibold mb-3 text-cyan-300">📈 Performance Metrics</h4>
+                  <div className="space-y-2 text-sm text-slate-300">
+                    <div className="flex justify-between p-2 rounded-lg bg-slate-800/50 border border-teal-500/10">
                       <span>Throughput</span>
-                      <span className="font-medium">{realtimeStats?.processingRate || 0} pts/sec</span>
+                      <span className="font-medium text-teal-300">{realtimeStats?.processingRate || 0} pts/sec</span>
                     </div>
-                    <div className="flex justify-between">
+                    <div className="flex justify-between p-2 rounded-lg bg-slate-800/50 border border-emerald-500/10">
                       <span>Cache Hit Rate</span>
-                      <span className="font-medium text-green-600">85%</span>
+                      <span className="font-medium text-emerald-300">85%</span>
                     </div>
-                    <div className="flex justify-between">
+                    <div className="flex justify-between p-2 rounded-lg bg-slate-800/50 border border-emerald-500/10">
                       <span>Error Rate</span>
-                      <span className="font-medium text-green-600">0.2%</span>
+                      <span className="font-medium text-emerald-300">0.2%</span>
                     </div>
-                    <div className="flex justify-between">
+                    <div className="flex justify-between p-2 rounded-lg bg-slate-800/50 border border-cyan-500/10">
                       <span>Uptime</span>
-                      <span className="font-medium">99.8%</span>
+                      <span className="font-medium text-cyan-300">99.8%</span>
                     </div>
                   </div>
                 </div>
@@ -268,26 +268,26 @@ function AnalyticsDashboard() {
 
           {/* Recent Insights */}
           {dashboardData.recentInsights && dashboardData.recentInsights.length > 0 && (
-            <Card>
+            <Card className="bg-slate-900/60 backdrop-blur-xl border-emerald-500/30 shadow-2xl">
               <CardHeader>
-                <CardTitle className="flex items-center gap-2">
+                <CardTitle className="flex items-center gap-2 text-emerald-300">
                     🔍 Recent AI-Generated Insights
-                  <Badge variant="outline" className="text-xs">
+                  <Badge variant="outline" className="text-xs bg-emerald-500/20 text-emerald-300 border-emerald-400/40">
                     {dashboardData.recentInsights.length} active
                   </Badge>
                 </CardTitle>
-                <CardDescription>
+                <CardDescription className="text-slate-400">
                   Machine learning predictions and anomaly detection results
                 </CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="space-y-3">
                   {dashboardData.recentInsights.slice(0, 4).map((insight: any, index: number) => (
-                    <Alert key={index} className={`transition-all hover:shadow-md ${
-                      insight.impact === 'CRITICAL' ? 'border-red-200 bg-red-50' :
-                      insight.impact === 'HIGH' ? 'border-orange-200 bg-orange-50' :
-                      insight.impact === 'MEDIUM' ? 'border-yellow-200 bg-yellow-50' :
-                      'border-blue-200 bg-blue-50'
+                    <Alert key={index} className={`transition-all hover:shadow-lg hover:shadow-emerald-500/10 ${
+                      insight.impact === 'CRITICAL' ? 'border-rose-500/40 bg-gradient-to-r from-rose-900/40 to-red-900/40 backdrop-blur-sm' :
+                      insight.impact === 'HIGH' ? 'border-orange-500/40 bg-gradient-to-r from-orange-900/40 to-amber-900/40 backdrop-blur-sm' :
+                      insight.impact === 'MEDIUM' ? 'border-amber-500/40 bg-gradient-to-r from-amber-900/40 to-yellow-900/40 backdrop-blur-sm' :
+                      'border-cyan-500/40 bg-gradient-to-r from-cyan-900/40 to-blue-900/40 backdrop-blur-sm'
                     }`}>
                       <AlertDescription>
                         <div className="flex items-start justify-between">
@@ -305,7 +305,7 @@ function AnalyticsDashboard() {
                               </Badge>
                             </div>
                             <p className="text-sm font-medium mb-1">{insight.prediction}</p>
-                            <div className="text-xs text-gray-500 flex items-center gap-4">
+                            <div className="text-xs text-slate-400 flex items-center gap-4">
                               <span>Confidence: {insight.confidence}%</span>
                               <span>Source: {insight.dataSource}</span>
                               <span>Timeframe: {insight.timeframe}</span>
@@ -326,54 +326,54 @@ function AnalyticsDashboard() {
             </Card>
           )}
 
-          <Card>
+          <Card className="bg-slate-900/60 backdrop-blur-xl border-emerald-500/30 shadow-2xl">
             <CardHeader>
-              <CardTitle>📊 Big Data Processing Overview</CardTitle>
-              <CardDescription>
+              <CardTitle className="text-emerald-300">📊 Big Data Processing Overview</CardTitle>
+              <CardDescription className="text-slate-400">
                 Real-time weather data analysis and pattern recognition
               </CardDescription>
             </CardHeader>
             <CardContent>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="space-y-4">
-                  <h4 className="font-semibold">🌍 Global Coverage</h4>
-                  <div className="bg-blue-50 p-4 rounded-lg">
+                  <h4 className="font-semibold text-cyan-300">🌍 Global Coverage</h4>
+                  <div className="bg-gradient-to-br from-cyan-500/20 to-blue-500/20 p-4 rounded-xl border border-cyan-400/30 backdrop-blur-sm">
                     <div className="grid grid-cols-2 gap-4 text-sm">
                       <div>
-                        <div className="text-2xl font-bold text-blue-600">
+                        <div className="text-2xl font-bold text-cyan-300">
                           {dashboardData.bigDataVolume?.citiesMonitored || 0}
                         </div>
-                        <div className="text-blue-700">Cities Monitored</div>
+                        <div className="text-cyan-200/80">Cities Monitored</div>
                       </div>
                       <div>
-                        <div className="text-2xl font-bold text-blue-600">
+                        <div className="text-2xl font-bold text-cyan-300">
                           {Math.floor((realtimeStats?.dataVolume || 0) / 1000)}K
                         </div>
-                        <div className="text-blue-700">Records Processed</div>
+                        <div className="text-cyan-200/80">Records Processed</div>
                       </div>
                     </div>
                   </div>
                 </div>
 
                 <div className="space-y-4">
-                  <h4 className="font-semibold">🤖 AI Capabilities</h4>
-                  <div className="bg-purple-50 p-4 rounded-lg">
-                    <div className="space-y-2 text-sm">
-                      <div className="flex items-center justify-between">
+                  <h4 className="font-semibold text-violet-300">🤖 AI Capabilities</h4>
+                  <div className="bg-gradient-to-br from-violet-500/20 to-purple-500/20 p-4 rounded-xl border border-violet-400/30 backdrop-blur-sm">
+                    <div className="space-y-2 text-sm text-slate-300">
+                      <div className="flex items-center justify-between p-2 rounded-lg bg-slate-800/50 border border-emerald-500/10">
                         <span>Statistical Anomaly Detection</span>
-                        <Badge variant="default" className="bg-green-100 text-green-800">Active</Badge>
+                        <Badge variant="default" className="bg-emerald-500/20 text-emerald-300 border-emerald-400/40">Active</Badge>
                       </div>
-                      <div className="flex items-center justify-between">
+                      <div className="flex items-center justify-between p-2 rounded-lg bg-slate-800/50 border border-emerald-500/10">
                         <span>Predictive Health Analytics</span>
-                        <Badge variant="default" className="bg-green-100 text-green-800">Active</Badge>
+                        <Badge variant="default" className="bg-emerald-500/20 text-emerald-300 border-emerald-400/40">Active</Badge>
                       </div>
-                      <div className="flex items-center justify-between">
+                      <div className="flex items-center justify-between p-2 rounded-lg bg-slate-800/50 border border-emerald-500/10">
                         <span>Weather Pattern Prediction</span>
-                        <Badge variant="default" className="bg-green-100 text-green-800">Active</Badge>
+                        <Badge variant="default" className="bg-emerald-500/20 text-emerald-300 border-emerald-400/40">Active</Badge>
                       </div>
-                      <div className="flex items-center justify-between">
+                      <div className="flex items-center justify-between p-2 rounded-lg bg-slate-800/50 border border-emerald-500/10">
                         <span>Climate Forecasting</span>
-                        <Badge variant="default" className="bg-green-100 text-green-800">Active</Badge>
+                        <Badge variant="default" className="bg-emerald-500/20 text-emerald-300 border-emerald-400/40">Active</Badge>
                       </div>
                     </div>
                   </div>
@@ -397,7 +397,7 @@ export default function WeatherMonitorDashboard() {
 
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
+    <div className="min-h-screen bg-gradient-to-br from-slate-950 via-emerald-950 to-teal-950">
       <Navbar activeTab={activeTab} onTabChange={setActiveTab} />
       
 

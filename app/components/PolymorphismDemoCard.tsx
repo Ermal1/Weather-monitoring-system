@@ -61,46 +61,46 @@ export function PolymorphismDemoCard() {
   }
 
   return (
-    <Card className="border-2 border-purple-200 bg-gradient-to-br from-purple-50 to-indigo-50">
+    <Card className="border-2 border-violet-500/40 bg-gradient-to-br from-slate-900/80 via-violet-900/20 to-indigo-900/20 backdrop-blur-xl shadow-2xl">
       <CardHeader>
-        <CardTitle className="flex items-center gap-2 text-purple-900">
-          <Activity className="h-6 w-6" />
+        <CardTitle className="flex items-center gap-2 text-violet-300">
+          <Activity className="h-6 w-6 text-violet-400" />
           🔄 Real-World Polymorphism Demo
-          <Badge variant="outline" className="ml-auto bg-purple-100 text-purple-700">
+          <Badge variant="outline" className="ml-auto bg-violet-500/20 text-violet-300 border-violet-400/40 backdrop-blur-sm">
             OOP
           </Badge>
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
-        <div className="text-sm text-gray-700 mb-4">
-          <p className="font-semibold mb-2">Demonstrates Advanced OOP Concepts:</p>
+        <div className="text-sm text-slate-300 mb-4">
+          <p className="font-semibold mb-2 text-violet-300">Demonstrates Advanced OOP Concepts:</p>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-            <div className="flex items-center gap-2 p-2 bg-white/60 rounded">
-              <Heart className="h-4 w-4 text-red-500" />
-              <span className="text-xs">Health Risk Processor</span>
+            <div className="flex items-center gap-2 p-2 bg-slate-800/60 rounded border border-rose-500/30 backdrop-blur-sm">
+              <Heart className="h-4 w-4 text-rose-400" />
+              <span className="text-xs text-rose-200">Health Risk Processor</span>
             </div>
-            <div className="flex items-center gap-2 p-2 bg-white/60 rounded">
-              <Car className="h-4 w-4 text-blue-500" />
-              <span className="text-xs">Traffic Optimization</span>
+            <div className="flex items-center gap-2 p-2 bg-slate-800/60 rounded border border-cyan-500/30 backdrop-blur-sm">
+              <Car className="h-4 w-4 text-cyan-400" />
+              <span className="text-xs text-cyan-200">Traffic Optimization</span>
             </div>
-            <div className="flex items-center gap-2 p-2 bg-white/60 rounded">
-              <Zap className="h-4 w-4 text-yellow-500" />
-              <span className="text-xs">Energy Efficiency</span>
+            <div className="flex items-center gap-2 p-2 bg-slate-800/60 rounded border border-amber-500/30 backdrop-blur-sm">
+              <Zap className="h-4 w-4 text-amber-400" />
+              <span className="text-xs text-amber-200">Energy Efficiency</span>
             </div>
           </div>
         </div>
 
-        <Alert className="bg-purple-50 border-purple-200">
-          <Brain className="h-4 w-4" />
-          <AlertDescription>
-            <strong>Same Interface, Different Implementations:</strong> One weather dataset processed through three specialized processors, each serving different weather monitoring needs. This is polymorphism in action!
+        <Alert className="bg-gradient-to-r from-violet-900/40 to-indigo-900/40 border-violet-500/40 backdrop-blur-sm">
+          <Brain className="h-4 w-4 text-violet-400" />
+          <AlertDescription className="text-violet-200">
+            <strong className="text-violet-300">Same Interface, Different Implementations:</strong> One weather dataset processed through three specialized processors, each serving different weather monitoring needs. This is polymorphism in action!
           </AlertDescription>
         </Alert>
 
         <Button 
           onClick={runDemo}
           disabled={isRunning}
-          className="w-full bg-purple-600 hover:bg-purple-700 text-white font-semibold py-3"
+          className="w-full bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-700 hover:to-indigo-700 text-white font-semibold py-3 shadow-lg shadow-violet-500/20"
           size="lg"
         >
           {isRunning ? (
@@ -117,39 +117,39 @@ export function PolymorphismDemoCard() {
         </Button>
 
         {lastResults && (
-          <div className="mt-4 p-4 bg-white/80 rounded-lg border border-purple-200">
+          <div className="mt-4 p-4 bg-slate-800/60 rounded-lg border border-violet-500/40 backdrop-blur-sm">
             <div className="flex items-center gap-2 mb-3">
-              <CheckCircle className="h-5 w-5 text-green-600" />
-              <span className="font-semibold text-green-700">Last Demo Results:</span>
+              <CheckCircle className="h-5 w-5 text-emerald-400" />
+              <span className="font-semibold text-emerald-300">Last Demo Results:</span>
             </div>
             <div className="grid grid-cols-3 gap-3 text-center">
-              <div className="bg-red-50 p-2 rounded">
-                <div className="text-lg font-bold text-red-600">
+              <div className="bg-gradient-to-br from-rose-900/40 to-red-900/40 p-2 rounded border border-rose-500/30">
+                <div className="text-lg font-bold text-rose-300">
                   {lastResults.insights.health.averageRiskScore}
                 </div>
-                <div className="text-xs text-red-700">Health Risk</div>
+                <div className="text-xs text-rose-200/80">Health Risk</div>
               </div>
-              <div className="bg-blue-50 p-2 rounded">
-                <div className="text-lg font-bold text-blue-600">
+              <div className="bg-gradient-to-br from-cyan-900/40 to-blue-900/40 p-2 rounded border border-cyan-500/30">
+                <div className="text-lg font-bold text-cyan-300">
                   {lastResults.insights.traffic.averageTrafficImpact}
                 </div>
-                <div className="text-xs text-blue-700">Traffic Impact</div>
+                <div className="text-xs text-cyan-200/80">Traffic Impact</div>
               </div>
-              <div className="bg-yellow-50 p-2 rounded">
-                <div className="text-lg font-bold text-yellow-600">
+              <div className="bg-gradient-to-br from-amber-900/40 to-yellow-900/40 p-2 rounded border border-amber-500/30">
+                <div className="text-lg font-bold text-amber-300">
                   {lastResults.insights.energy.averageEfficiencyScore}
                 </div>
-                <div className="text-xs text-yellow-700">Energy Score</div>
+                <div className="text-xs text-amber-200/80">Energy Score</div>
               </div>
             </div>
-            <div className="text-xs text-gray-600 mt-2 text-center">
+            <div className="text-xs text-slate-300 mt-2 text-center">
               {lastResults.summary}
             </div>
           </div>
         )}
 
-        <div className="text-xs text-gray-500 bg-white/50 p-2 rounded">
-          <strong>Technical Implementation:</strong> Uses real OpenWeatherMap API data, processes through HealthRiskProcessor, TrafficOptimizationProcessor, and EnergyEfficiencyProcessor - all implementing the same IDataProcessor interface but producing completely different business insights.
+        <div className="text-xs text-slate-400 bg-slate-800/50 p-2 rounded border border-violet-500/20 backdrop-blur-sm">
+          <strong className="text-violet-300">Technical Implementation:</strong> <span className="text-slate-300">Uses real OpenWeatherMap API data, processes through HealthRiskProcessor, TrafficOptimizationProcessor, and EnergyEfficiencyProcessor - all implementing the same IDataProcessor interface but producing completely different business insights.</span>
         </div>
       </CardContent>
     </Card>

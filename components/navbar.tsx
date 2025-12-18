@@ -45,7 +45,7 @@ export function Navbar({ activeTab, onTabChange }: NavbarProps) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
 
   return (
-    <nav className="bg-white/80 backdrop-blur-lg border-b border-gray-200/50 sticky top-0 z-50 shadow-lg">
+    <nav className="bg-slate-900/95 backdrop-blur-xl border-b border-emerald-500/20 sticky top-0 z-50 shadow-2xl shadow-emerald-500/10">
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-16">
           <div className="flex items-center space-x-4">
@@ -60,10 +60,10 @@ export function Navbar({ activeTab, onTabChange }: NavbarProps) {
               />
             </div>
             <div className="hidden md:block">
-              <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-cyan-600 bg-clip-text text-transparent">
+              <h1 className="text-2xl font-bold bg-gradient-to-r from-emerald-400 via-teal-400 to-cyan-400 bg-clip-text text-transparent">
                 Weather Monitor System
               </h1>
-              <p className="text-sm text-gray-600">Real-Time Weather Intelligence</p>
+              <p className="text-sm text-emerald-300/80">Real-Time Weather Intelligence</p>
             </div>
           </div>
 
@@ -78,10 +78,10 @@ export function Navbar({ activeTab, onTabChange }: NavbarProps) {
                   variant={isActive ? "default" : "ghost"}
                   onClick={() => onTabChange(item.id)}
                   className={cn(
-                    "flex items-center space-x-2 px-4 py-2 rounded-lg transition-all duration-200",
+                    "flex items-center space-x-2 px-4 py-2 rounded-xl transition-all duration-300",
                     isActive 
-                      ? "bg-gradient-to-r from-blue-500 to-purple-600 text-white shadow-lg scale-105" 
-                      : "hover:bg-blue-50 hover:text-blue-700 text-gray-700"
+                      ? "bg-gradient-to-r from-emerald-500 via-teal-500 to-cyan-500 text-white shadow-lg shadow-emerald-500/50 scale-105 border border-emerald-400/30" 
+                      : "hover:bg-emerald-500/10 hover:text-emerald-300 text-slate-300 hover:border-emerald-500/20 border border-transparent"
                   )}
                 >
                   <Icon className="w-4 h-4" />
@@ -95,8 +95,8 @@ export function Navbar({ activeTab, onTabChange }: NavbarProps) {
           </div>
 
           <div className="hidden md:flex items-center space-x-3">
-            <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200 animate-pulse">
-              <div className="w-2 h-2 bg-green-500 rounded-full mr-2 animate-ping"></div>
+            <Badge variant="outline" className="bg-emerald-500/20 text-emerald-300 border-emerald-400/40 backdrop-blur-sm animate-pulse">
+              <div className="w-2 h-2 bg-emerald-400 rounded-full mr-2 animate-ping"></div>
               Live Data
             </Badge>
           </div>
@@ -116,7 +116,7 @@ export function Navbar({ activeTab, onTabChange }: NavbarProps) {
         </div>
 
         {isMobileMenuOpen && (
-          <div className="lg:hidden border-t border-gray-200/50 bg-white/95 backdrop-blur-lg">
+          <div className="lg:hidden border-t border-emerald-500/20 bg-slate-900/98 backdrop-blur-xl">
             <div className="py-4 space-y-2">
               {navItems.map((item) => {
                 const Icon = item.icon
@@ -131,10 +131,10 @@ export function Navbar({ activeTab, onTabChange }: NavbarProps) {
                       setIsMobileMenuOpen(false)
                     }}
                     className={cn(
-                      "w-full justify-start space-x-3 px-4 py-3 rounded-lg",
+                      "w-full justify-start space-x-3 px-4 py-3 rounded-xl transition-all",
                       isActive 
-                        ? "bg-gradient-to-r from-blue-500 to-purple-600 text-white" 
-                        : "hover:bg-blue-50 hover:text-blue-700"
+                        ? "bg-gradient-to-r from-emerald-500 via-teal-500 to-cyan-500 text-white shadow-lg shadow-emerald-500/30" 
+                        : "hover:bg-emerald-500/10 hover:text-emerald-300 text-slate-300"
                     )}
                   >
                     <Icon className="w-5 h-5" />
@@ -150,9 +150,9 @@ export function Navbar({ activeTab, onTabChange }: NavbarProps) {
               })}
               
               {/* Mobile Status */}
-              <div className="pt-3 border-t border-gray-200/50">
-                <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200 w-full justify-center">
-                  <div className="w-2 h-2 bg-green-500 rounded-full mr-2 animate-ping"></div>
+              <div className="pt-3 border-t border-emerald-500/20">
+                <Badge variant="outline" className="bg-emerald-500/20 text-emerald-300 border-emerald-400/40 w-full justify-center backdrop-blur-sm">
+                  <div className="w-2 h-2 bg-emerald-400 rounded-full mr-2 animate-ping"></div>
                   Real-time Data Active
                 </Badge>
               </div>

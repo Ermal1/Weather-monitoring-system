@@ -179,6 +179,7 @@ export async function getMultipleCitiesWeather(limit: number = 15): Promise<Proc
 
 export async function getGlobalWeatherInsights() {
   try {
+    debugger;
     // Only use Supabase on server-side (in API routes or server components)
     if (typeof window === 'undefined') {
       const { data: cachedData, error } = await supabase

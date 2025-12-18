@@ -10,21 +10,21 @@ export function Footer() {
   };
 
   return (
-    <footer className="bg-gradient-to-r from-slate-900 to-slate-800 text-white py-12 mt-16">
+    <footer className="bg-gradient-to-r from-slate-950 via-emerald-950 to-teal-950 text-white py-12 mt-16 border-t border-emerald-500/20">
       <div className="container mx-auto px-4">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           <div className="space-y-4">
-            <h3 className="text-xl font-semibold flex items-center gap-2">
-              <GraduationCap className="h-5 w-5" />
+            <h3 className="text-xl font-semibold flex items-center gap-2 text-emerald-300">
+              <GraduationCap className="h-5 w-5 text-emerald-400" />
               Academic Project
             </h3>
-            <p className="text-gray-300 text-sm leading-relaxed">
+            <p className="text-slate-300 text-sm leading-relaxed">
               Weather Monitor System developed for Advanced Programming
               course at UBT University. This project demonstrates comprehensive
               OOP principles, design patterns, and real-time big data
               processing.
             </p>
-            <div className="text-xs text-gray-400">
+            <div className="text-xs text-slate-400">
               <p>Course: Advanced Programming (Master's Level)</p>
               <p>Institution: UBT University</p>
               <p>Technology: TypeScript, React 19, Next.js 15</p>
@@ -32,15 +32,15 @@ export function Footer() {
           </div>
 
           <div className="space-y-4">
-            <h3 className="text-xl font-semibold flex items-center gap-2">
-              <BookOpen className="h-5 w-5" />
+            <h3 className="text-xl font-semibold flex items-center gap-2 text-teal-300">
+              <BookOpen className="h-5 w-5 text-teal-400" />
               Project Documentation
             </h3>
             <div className="space-y-2">
               <Button
                 variant="outline"
                 size="sm"
-                className="w-full justify-start text-left bg-transparent border-gray-600 text-white hover:bg-gray:900"
+                className="w-full justify-start text-left bg-transparent border-emerald-500/30 text-slate-300 hover:bg-emerald-500/10 hover:border-emerald-400/50 hover:text-emerald-300 transition-all"
                 onClick={() => openDocument("/documents/project-requirements")}
               >
                 <FileText className="h-4 w-4 mr-2" />
@@ -51,7 +51,7 @@ export function Footer() {
               <Button
                 variant="outline"
                 size="sm"
-                className="w-full justify-start text-left bg-transparent border-gray-600 text-white hover:bg-gray:900"
+                className="w-full justify-start text-left bg-transparent border-emerald-500/30 text-slate-300 hover:bg-emerald-500/10 hover:border-emerald-400/50 hover:text-emerald-300 transition-all"
                 onClick={() => openDocument("/documents/project-proposal")}
               >
                 <FileText className="h-4 w-4 mr-2" />
@@ -62,7 +62,7 @@ export function Footer() {
               <Button
                 variant="outline"
                 size="sm"
-                className="w-full justify-start text-left bg-transparent border-gray-600 text-white hover:bg-gray:900"
+                className="w-full justify-start text-left bg-transparent border-emerald-500/30 text-slate-300 hover:bg-emerald-500/10 hover:border-emerald-400/50 hover:text-emerald-300 transition-all"
                 onClick={() => openDocument("/documents/conference-paper")}
               >
                 <FileText className="h-4 w-4 mr-2" />
@@ -73,10 +73,10 @@ export function Footer() {
           </div>
 
           <div className="space-y-4">
-            <h3 className="text-xl font-semibold">Technical Achievements</h3>
-            <div className="space-y-2 text-sm text-gray-300">
+            <h3 className="text-xl font-semibold text-cyan-300">Technical Achievements</h3>
+            <div className="space-y-2 text-sm text-slate-300">
               <div className="flex items-center gap-2">
-                <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                <div className="w-2 h-2 bg-emerald-400 rounded-full animate-pulse"></div>
                 <span>25+ Classes</span>
               </div>
               <div className="flex items-center gap-2">
@@ -103,9 +103,9 @@ export function Footer() {
           </div>
         </div>
 
-        <Separator className="my-8 bg-gray-600" />
+        <Separator className="my-8 bg-emerald-500/20" />
 
-        <div className="flex flex-col md:flex-row justify-between items-center text-sm text-gray-400">
+        <div className="flex flex-col md:flex-row justify-between items-center text-sm text-slate-400">
           <div className="flex items-center gap-4 mb-4 md:mb-0">
             <span>© 2025 Weather Monitor System</span>
             <span>•</span>
