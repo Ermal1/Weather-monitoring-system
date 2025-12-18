@@ -115,12 +115,9 @@ export class BigDataProcessor extends BigDataEngine {
       windSpeed: Math.floor(Math.random() * 30),
       pressure: 1000 + Math.floor(Math.random() * 50),
       weatherCondition: ['Clear', 'Cloudy', 'Rainy', 'Stormy'][Math.floor(Math.random() * 4)],
-      timestamp: new Date(),
-      temperature: Math.random() * 40 - 10,
-      humidity: Math.random() * 100
+      timestamp: new Date()
     }
   }
-
   private async storeBatch(batch: BatchData): Promise<void> {
     try {
       switch (batch.type) {
@@ -157,8 +154,9 @@ export class BigDataProcessor extends BigDataEngine {
   }
 
   private processSensorData(record: any): void {
-    if (record.aqi > 150 || (record.temperature && (record.temperature > 35 || record.temperature < -10))) {
-      console.log(`Severe weather conditions detected: Weather Index ${record.aqi} in ${record.location}`)
+    const weatherIndex = record.weatherIndex || record.aqi || 50
+    if (weatherIndex > 150 || (record.temperature && (record.temperature > 35 || record.temperature < -10))) {
+      console.log(`Severe weather conditions detected: Weather Index ${weatherIndex} in ${record.location}`)
     }
   }
 

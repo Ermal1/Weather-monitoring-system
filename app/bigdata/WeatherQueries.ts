@@ -10,8 +10,6 @@ export const weatherQueryKeys = {
   alerts: (city: string) => ['weather', 'alerts', city] as const,
 }
 
-// Backward compatibility
-export const aqicnQueryKeys = weatherQueryKeys
 
 export interface ProcessedWeatherData {
   temperature: number
@@ -28,8 +26,7 @@ export interface ProcessedWeatherData {
   location: string
   timestamp: string
   apiSource: string
-  // Keep AQI for backward compatibility but treat as weather index
-  aqi?: number
+  weatherIndex?: number
   pm25?: number
   pm10?: number
   no2?: number
@@ -61,8 +58,7 @@ function transformCityDataToWeather(cityData: CityData): ProcessedWeatherData {
     location: cityData.location,
     timestamp: cityData.timestamp,
     apiSource: cityData.apiSource,
-    // Keep for backward compatibility
-    aqi: cityData.aqi,
+    weatherIndex: cityData.aqi,
     pm25: cityData.pm25,
     pm10: cityData.pm10,
     no2: cityData.no2,
@@ -162,8 +158,6 @@ export async function getWeatherByCity(cityName: string): Promise<ProcessedWeath
   }
 }
 
-// Backward compatibility
-export const getAirQualityByCity = getWeatherByCity
 
 export async function getMultipleCitiesWeather(limit: number = 15): Promise<ProcessedWeatherData[]> {
   try {
@@ -182,48 +176,48 @@ export async function getMultipleCitiesWeather(limit: number = 15): Promise<Proc
   }
 }
 
-// Backward compatibility
-export const getMultipleCitiesAirQuality = getMultipleCitiesWeather
 
 export async function getGlobalWeatherInsights() {
   try {
-    const { data: cachedData, error } = await supabase
-      .from("cached_weather_data")
-      .select("city_name, temperature, humidity, weather_index, health_level")
-      .order("cached_at", { ascending: false })
-
-    if (!error && cachedData && cachedData.length > 0) {
-      const totalTemp = cachedData.reduce((sum: number, city: any) => sum + (city.temperature || 20), 0)
-      const averageTemp = Math.round(totalTemp / cachedData.length)
-      const citiesWithAlerts = cachedData.filter((city: any) => 
-        city.weather_index > 100 || (city.temperature && (city.temperature > 35 || city.temperature < -10))
-      ).length
-
-      const sortedByTemp = [...cachedData].sort((a: any, b: any) => 
-        (a.temperature || 20) - (b.temperature || 20)
-      )
-      const coolestCity = { 
-        name: sortedByTemp[0].city_name, 
-        temperature: sortedByTemp[0].temperature || 20 
-      }
-      const warmestCity = { 
-        name: sortedByTemp[sortedByTemp.length - 1].city_name, 
-        temperature: sortedByTemp[sortedByTemp.length - 1].temperature || 20 
-      }
-
-      console.log(`✅ Global weather insights from ${cachedData.length} cities: avg temp ${averageTemp}°C`)
+    // Only use Supabase on server-side (in API routes or server components)
+    if (typeof window === 'undefined') {
+      const { data: cachedData, error } = await supabase
+        .from("cached_weather_data")
+        .select("city_name, temperature, humidity, weather_index, health_level")
+        .order("cached_at", { ascending: false })
       
-      return {
-        totalCitiesMonitored: cachedData.length,
-        averageTemperature: averageTemp,
-        averageAQI: averageTemp, // Backward compatibility
-        citiesWithAlerts,
-        coolestCity: { name: coolestCity.name, temperature: coolestCity.temperature },
-        warmestCity: { name: warmestCity.name, temperature: warmestCity.temperature },
-        bestCity: coolestCity, // Backward compatibility
-        worstCity: warmestCity, // Backward compatibility
-        dataVolume: cachedData.length * 7, 
-        countriesRepresented: 19 
+      console.log("cachedData", cachedData);
+      
+      if (!error && cachedData && cachedData.length > 0) {
+        const totalTemp = cachedData.reduce((sum: number, city: any) => sum + (city.temperature || 20), 0)
+        const averageTemp = Math.round(totalTemp / cachedData.length)
+        const citiesWithAlerts = cachedData.filter((city: any) => 
+          city.weather_index > 100 || (city.temperature && (city.temperature > 35 || city.temperature < -10))
+        ).length
+
+        const sortedByTemp = [...cachedData].sort((a: any, b: any) => 
+          (a.temperature || 20) - (b.temperature || 20)
+        )
+        const coolestCity = { 
+          name: sortedByTemp[0].city_name, 
+          temperature: sortedByTemp[0].temperature || 20 
+        }
+        const warmestCity = { 
+          name: sortedByTemp[sortedByTemp.length - 1].city_name, 
+          temperature: sortedByTemp[sortedByTemp.length - 1].temperature || 20 
+        }
+
+        console.log(`✅ Global weather insights from ${cachedData.length} cities: avg temp ${averageTemp}°C`)
+        
+        return {
+          totalCitiesMonitored: cachedData.length,
+          averageTemperature: averageTemp,
+          citiesWithAlerts,
+          coolestCity: { name: coolestCity.name, temperature: coolestCity.temperature },
+          warmestCity: { name: warmestCity.name, temperature: warmestCity.temperature },
+          dataVolume: cachedData.length * 7, 
+          countriesRepresented: 19 
+        }
       }
     }
 
@@ -231,30 +225,44 @@ export async function getGlobalWeatherInsights() {
     const insights = await multiCityConnector.getGlobalInsights()
     
     if (!insights) {
-      throw new Error('Failed to generate global weather insights')
+      // Return default insights if no data is available
+      console.warn('⚠️ No insights available, returning default values')
+      return {
+        totalCitiesMonitored: 0,
+        averageTemperature: 20,
+        citiesWithAlerts: 0,
+        coolestCity: { name: 'N/A', temperature: 15 },
+        warmestCity: { name: 'N/A', temperature: 25 },
+        dataVolume: 0,
+        countriesRepresented: 0
+      }
     }
     
     // Transform to weather-focused insights
     return {
       totalCitiesMonitored: insights.totalCitiesMonitored,
       averageTemperature: Math.round(20 + (insights.averageAQI * 0.1)),
-      averageAQI: insights.averageAQI, // Backward compatibility
       citiesWithAlerts: insights.citiesWithAlerts,
-      coolestCity: { name: insights.bestCity.name, temperature: Math.round(15 + (insights.bestCity.aqi * 0.1)) },
-      warmestCity: { name: insights.worstCity.name, temperature: Math.round(25 + (insights.worstCity.aqi * 0.1)) },
-      bestCity: insights.bestCity, // Backward compatibility
-      worstCity: insights.worstCity, // Backward compatibility
+      coolestCity: { name: insights.bestCity.name, temperature: Math.round(15 + (((insights.bestCity as any).weatherIndex || (insights.bestCity as any).aqi || 50) * 0.1)) },
+      warmestCity: { name: insights.worstCity.name, temperature: Math.round(25 + (((insights.worstCity as any).weatherIndex || (insights.worstCity as any).aqi || 50) * 0.1)) },
       dataVolume: insights.dataVolume,
       countriesRepresented: insights.countriesRepresented
     }
   } catch (error) {
     console.error('Error getting global weather insights:', error)
-    throw error
+    // Return default insights instead of throwing
+    return {
+      totalCitiesMonitored: 0,
+      averageTemperature: 20,
+      citiesWithAlerts: 0,
+      coolestCity: { name: 'N/A', temperature: 15 },
+      warmestCity: { name: 'N/A', temperature: 25 },
+      dataVolume: 0,
+      countriesRepresented: 0
+    }
   }
 }
 
-// Backward compatibility
-export const getGlobalAirQualityInsights = getGlobalWeatherInsights
 
 export async function getCityWeatherAlert(cityName: string) {
   try {
@@ -289,8 +297,6 @@ export async function getCityWeatherAlert(cityName: string) {
   }
 }
 
-// Backward compatibility
-export const getCityAirQualityAlert = getCityWeatherAlert
 
 export function getWeatherAPIStats() {
   return {
@@ -304,6 +310,4 @@ export function getWeatherAPIStats() {
   }
 }
 
-// Backward compatibility
-export const getAQICNAPIStats = getWeatherAPIStats
 

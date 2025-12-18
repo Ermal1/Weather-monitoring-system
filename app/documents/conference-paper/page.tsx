@@ -536,7 +536,7 @@ export default function ConferencePaperPage() {
                         Embassy Monitors
                       </div>
                       <div className="text-gray-600 text-sm">
-                        Diplomatic mission air quality sensors
+                        Diplomatic mission weather sensors
                       </div>
                     </div>
                     <div className="p-3  rounded-lg text-center">
@@ -752,7 +752,7 @@ export default function ConferencePaperPage() {
                         Cost Efficiency:
                       </strong>{" "}
                       <span className="text-indigo-800">
-                        Free AQICN API vs. expensive enterprise licenses
+                        Free OpenWeatherMap API vs. expensive enterprise licenses
                       </span>
                     </div>
                     <div className="p-2  rounded text-sm">
@@ -806,7 +806,7 @@ export default function ConferencePaperPage() {
                     </li>
                     <li>
                       • <strong>Practical Impact:</strong> Addresses genuine
-                      urban air quality monitoring needs
+                      urban weather monitoring needs
                     </li>
                   </ul>
                 </div>
@@ -828,8 +828,8 @@ export default function ConferencePaperPage() {
             <CardContent>
               <div className="space-y-2 text-sm text-gray-700">
                 <div>
-                  1. World Air Quality Index Project. (2025). AQICN API
-                  Documentation. Retrieved from https://aqicn.org/api/
+                  1. Weather API Project. (2025). Weather API Documentation
+                  Documentation. Retrieved from https://openweathermap.org/api/
                 </div>
                 <div>
                   2. Dr.Sc Edmond Jajaga. (2025). Advanced Programming Course

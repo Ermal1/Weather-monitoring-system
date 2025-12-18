@@ -6,8 +6,6 @@ export enum DeviceType {
   HUMIDITY_SENSOR = "HUMIDITY_SENSOR",
   WIND_SPEED_MONITOR = "WIND_SPEED_MONITOR",
   PRESSURE_SENSOR = "PRESSURE_SENSOR",
-  // Legacy for backward compatibility
-  AIR_QUALITY_MONITOR = "WEATHER_STATION",
   NOISE_MONITOR = "NOISE_MONITOR"
 }
 
@@ -59,24 +57,12 @@ export enum WeatherConditionLevel {
   HAZARDOUS = "HAZARDOUS"
 }
 
-// Backward compatibility
-export enum AirQualityLevel {
-  GOOD = "GOOD",
-  MODERATE = "MODERATE",
-  UNHEALTHY_FOR_SENSITIVE = "UNHEALTHY_FOR_SENSITIVE",
-  UNHEALTHY = "UNHEALTHY",
-  VERY_UNHEALTHY = "VERY_UNHEALTHY",
-  HAZARDOUS = "HAZARDOUS"
-}
 
 export enum AnalyticsInsightType {
   HEALTH_RECOMMENDATION = "HEALTH_RECOMMENDATION",
   ANOMALY_DETECTION = "ANOMALY_DETECTION",
   GLOBAL_WEATHER_ALERT = "GLOBAL_WEATHER_ALERT",
-  CITY_WEATHER_ALERT = "CITY_WEATHER_ALERT",
-  // Backward compatibility
-  GLOBAL_AIR_QUALITY_ALERT = "GLOBAL_WEATHER_ALERT",
-  CITY_AIR_QUALITY_ALERT = "CITY_WEATHER_ALERT"
+  CITY_WEATHER_ALERT = "CITY_WEATHER_ALERT"
 }
 
 export enum SystemEventType {
@@ -88,9 +74,7 @@ export enum SystemEventType {
   SYSTEM_STARTUP = "SYSTEM_STARTUP",
   SYSTEM_SHUTDOWN = "SYSTEM_SHUTDOWN",
   DATA_ANOMALY = "DATA_ANOMALY",
-  API_ERROR = "API_ERROR",
-  // Backward compatibility
-  POOR_AIR_QUALITY = "SEVERE_WEATHER"
+  API_ERROR = "API_ERROR"
 }
 
 export enum DataSourceType {
@@ -99,16 +83,12 @@ export enum DataSourceType {
   INTERNAL_SENSOR = "INTERNAL_SENSOR",
   GOVERNMENT_STATION = "GOVERNMENT_STATION",
   METEOROLOGICAL_SERVICE = "METEOROLOGICAL_SERVICE",
-  // Backward compatibility
-  AQICN_API = "OPENWEATHERMAP_API",
   EMBASSY_MONITOR = "INTERNAL_SENSOR",
   WEATHER_SERVICE = "WEATHER_API"
 }
 
 export enum ServiceType {
-  WEATHER_MONITORING = "WEATHER_MONITORING",
-  // Backward compatibility
-  AIR_QUALITY = "WEATHER_MONITORING"
+  WEATHER_MONITORING = "WEATHER_MONITORING"
 }
 
 export enum ProcessingPriority {
@@ -133,9 +113,7 @@ export class EnumHelper {
       [DeviceType.HUMIDITY_SENSOR]: "Humidity Sensor",
       [DeviceType.WIND_SPEED_MONITOR]: "Wind Speed Monitor",
       [DeviceType.PRESSURE_SENSOR]: "Pressure Sensor",
-      [DeviceType.NOISE_MONITOR]: "Noise Monitor",
-      // Legacy
-      [DeviceType.AIR_QUALITY_MONITOR]: "Weather Station"
+      [DeviceType.NOISE_MONITOR]: "Noise Monitor"
     }
     return displayNames[type]
   }
@@ -152,10 +130,6 @@ export class EnumHelper {
     return colors[level]
   }
 
-  // Backward compatibility
-  static getAirQualityColor(level: AirQualityLevel): string {
-    return EnumHelper.getWeatherConditionColor(level as WeatherConditionLevel)
-  }
 
   static getAlertSeverityIcon(severity: AlertSeverity): string {
     const icons: Record<AlertSeverity, string> = {

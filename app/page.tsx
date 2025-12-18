@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react'
 import { Navbar } from '@/components/navbar'
 import { Footer } from '@/components/footer'
-import { useRealtimeWeather } from '@/hooks/use-realtime-air-quality' // Uses weather data
+import { useRealtimeWeather } from '@/hooks/use-realtime-air-quality'
 import { HeroSection } from '@/components/sections/hero-section'
 import { GlobalMonitoring } from '@/components/sections/global-monitoring'
 import { AIInsights } from '@/components/sections/ai-insights'

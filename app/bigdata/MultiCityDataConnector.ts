@@ -55,7 +55,7 @@ export class MultiCityDataConnector {
   ]
 
   public async fetchMultipleCitiesData(limit?: number): Promise<CityData[]> {
-    // Try to fetch from OpenWeatherMap API first
+    // Fetch from OpenWeatherMap API (primary and only source)
     try {
       const apiData = await this.weatherAPIConnector.fetchMultipleCitiesWeather(limit)
       if (apiData && apiData.length > 0) {
@@ -63,11 +63,11 @@ export class MultiCityDataConnector {
         return apiData
       }
     } catch (error) {
-      console.warn('⚠️ OpenWeatherMap API failed, using fallback data:', error)
+      console.warn('⚠️ OpenWeatherMap API failed:', error)
     }
 
-    // Fallback to generated data if API fails or no API key
-    console.log('📊 Using fallback weather data generation')
+    // Fallback to generated data only if OpenWeatherMap API fails or no API key
+    console.log('📊 OpenWeatherMap API unavailable, using fallback weather data generation')
     const citiesToFetch = limit ? this.GLOBAL_CITIES.slice(0, limit) : this.GLOBAL_CITIES.slice(0, 15)
     const results: CityData[] = []
 
@@ -214,14 +214,14 @@ export class MultiCityDataConnector {
   }
 
   public async getGlobalInsights() {
-    // Try API first, then fallback
+    // Fetch from OpenWeatherMap API first
     try {
       const apiInsights = await this.weatherAPIConnector.getGlobalInsights()
       if (apiInsights) {
         return apiInsights
       }
     } catch (error) {
-      console.warn('⚠️ API insights failed, using fallback:', error)
+      console.warn('⚠️ OpenWeatherMap API insights failed, using fallback:', error)
     }
 
     // Fallback to generated data
@@ -234,7 +234,7 @@ export class MultiCityDataConnector {
     const averageAQI = Math.round(50 + Math.abs(averageTemp - 20) * 2) // Convert temp to weather index
     const citiesWithAlerts = cityData.filter(city => 
       (city.temperature && (city.temperature > 35 || city.temperature < -10)) ||
-      city.aqi > 100
+      (city.weatherIndex || city.aqi || 50) > 100
     ).length
 
     const sortedByTemp = [...cityData].sort((a, b) => {
@@ -242,8 +242,8 @@ export class MultiCityDataConnector {
       const tempB = Math.abs((b.temperature || 20) - 20)
       return tempA - tempB
     })
-    const bestCity = { name: sortedByTemp[0].location, aqi: sortedByTemp[0].aqi || 50 }
-    const worstCity = { name: sortedByTemp[sortedByTemp.length - 1].location, aqi: sortedByTemp[sortedByTemp.length - 1].aqi || 150 }
+    const bestCity = { name: sortedByTemp[0].location, weatherIndex: sortedByTemp[0].weatherIndex || sortedByTemp[0].aqi || 50 }
+    const worstCity = { name: sortedByTemp[sortedByTemp.length - 1].location, weatherIndex: sortedByTemp[sortedByTemp.length - 1].weatherIndex || sortedByTemp[sortedByTemp.length - 1].aqi || 150 }
 
     return {
       totalCitiesMonitored: cityData.length,

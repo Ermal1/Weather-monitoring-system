@@ -1,11 +1,8 @@
 import type { IDataProcessor } from "../interfaces/IDataProcessor"
 import type { ProcessedWeatherData } from "../bigdata/WeatherQueries"
 
-// Backward compatibility type alias
-type ProcessedAirQualityData = ProcessedWeatherData
-
 // Helper function for weather index calculation
-function calculateWeatherIndex(data: ProcessedAirQualityData): number {
+function calculateWeatherIndex(data: ProcessedWeatherData): number {
   let index = 50
   if (data.temperature && (data.temperature > 35 || data.temperature < -10)) index += 100
   if (data.windSpeed && data.windSpeed > 30) index += 80
@@ -17,21 +14,21 @@ export class HealthRiskProcessor implements IDataProcessor {
   private batchSize = 100
   private processingRate = 0
 
-  public async processData(data: any[]): Promise<ProcessedAirQualityData[]> {
+  public async processData(data: any[]): Promise<ProcessedWeatherData[]> {
     this.processingRate = data.length / 10 // Simulate processing speed
 
-    return data.map((airData: ProcessedAirQualityData) => ({
-      ...airData,
-      healthRisk: this.calculateHealthRisk(airData),
-      recommendations: this.generateHealthRecommendations(airData),
-      riskCategory: this.getRiskCategory(airData.aqi || calculateWeatherIndex(airData)),
-      vulnerableGroups: this.getVulnerableGroups(airData),
+    return data.map((weatherData: ProcessedWeatherData) => ({
+      ...weatherData,
+      healthRisk: this.calculateHealthRisk(weatherData),
+      recommendations: this.generateHealthRecommendations(weatherData),
+      riskCategory: this.getRiskCategory(weatherData.weatherIndex || calculateWeatherIndex(weatherData)),
+      vulnerableGroups: this.getVulnerableGroups(weatherData),
       processor_type: "HEALTH_RISK",
       processed_at: new Date().toISOString()
     }))
   }
 
-  private calculateHealthRisk(data: ProcessedAirQualityData): number {
+  private calculateHealthRisk(data: ProcessedWeatherData): number {
     // Calculate health risk based on weather conditions
     let risk = 0
     if (data.temperature && (data.temperature > 35 || data.temperature < -10)) risk += 50
@@ -53,9 +50,9 @@ export class HealthRiskProcessor implements IDataProcessor {
     return Math.min(100, risk)
   }
 
-  private generateHealthRecommendations(data: ProcessedAirQualityData): string[] {
+  private generateHealthRecommendations(data: ProcessedWeatherData): string[] {
     const recommendations: string[] = []
-    const weatherIndex = data.aqi || calculateWeatherIndex(data)
+    const weatherIndex = data.weatherIndex || calculateWeatherIndex(data)
     
     if (weatherIndex > 150 || data.temperature > 35 || data.temperature < -10) {
       recommendations.push("Avoid outdoor activities")
@@ -78,7 +75,7 @@ export class HealthRiskProcessor implements IDataProcessor {
     return recommendations
   }
 
-  private calculateWeatherIndex(data: ProcessedAirQualityData): number {
+  private calculateWeatherIndex(data: ProcessedWeatherData): number {
     let index = 50
     if (data.temperature > 35 || data.temperature < -10) index += 100
     if (data.windSpeed > 30) index += 80
@@ -94,9 +91,9 @@ export class HealthRiskProcessor implements IDataProcessor {
     return "EXTREME"
   }
 
-  private getVulnerableGroups(data: ProcessedAirQualityData): string[] {
+  private getVulnerableGroups(data: ProcessedWeatherData): string[] {
     const groups: string[] = []
-    const weatherIndex = data.aqi || calculateWeatherIndex(data)
+    const weatherIndex = data.weatherIndex || calculateWeatherIndex(data)
     
     if (weatherIndex > 100 || data.temperature > 30 || data.temperature < -5) {
       groups.push("Children", "Elderly", "Pregnant women")
@@ -128,21 +125,21 @@ export class TrafficOptimizationProcessor implements IDataProcessor {
   private batchSize = 200
   private processingRate = 0
 
-  public async processData(data: any[]): Promise<ProcessedAirQualityData[]> {
+  public async processData(data: any[]): Promise<ProcessedWeatherData[]> {
     this.processingRate = data.length / 5 // Faster processing for traffic optimization
 
-    return data.map((airData: ProcessedAirQualityData) => ({
-      ...airData,
-      trafficImpact: this.calculateTrafficImpact(airData),
-      routeRecommendations: this.generateRouteRecommendations(airData),
-      congestionLevel: this.estimateCongestionLevel(airData),
-      alternativeRoutes: this.suggestAlternativeRoutes(airData),
+    return data.map((weatherData: ProcessedWeatherData) => ({
+      ...weatherData,
+      trafficImpact: this.calculateTrafficImpact(weatherData),
+      routeRecommendations: this.generateRouteRecommendations(weatherData),
+      congestionLevel: this.estimateCongestionLevel(weatherData),
+      alternativeRoutes: this.suggestAlternativeRoutes(weatherData),
       processor_type: "TRAFFIC_OPTIMIZATION",
       processed_at: new Date().toISOString()
     }))
   }
 
-  private calculateTrafficImpact(data: ProcessedAirQualityData): number {
+  private calculateTrafficImpact(data: ProcessedWeatherData): number {
     // Calculate traffic impact based on weather conditions
     let impact = 0
     if (data.precipitation > 20) impact += 40 // Rain affects traffic
@@ -156,9 +153,9 @@ export class TrafficOptimizationProcessor implements IDataProcessor {
     return Math.min(100, impact)
   }
 
-  private generateRouteRecommendations(data: ProcessedAirQualityData): string[] {
+  private generateRouteRecommendations(data: ProcessedWeatherData): string[] {
     const recommendations: string[] = []
-    const weatherIndex = data.aqi || calculateWeatherIndex(data)
+    const weatherIndex = data.weatherIndex || calculateWeatherIndex(data)
     
     if (weatherIndex > 150 || data.precipitation > 30 || data.windSpeed > 30) {
       recommendations.push("Avoid high-traffic routes")
@@ -175,7 +172,7 @@ export class TrafficOptimizationProcessor implements IDataProcessor {
     return recommendations
   }
 
-  private estimateCongestionLevel(data: ProcessedAirQualityData): string {
+  private estimateCongestionLevel(data: ProcessedWeatherData): string {
     // Estimate congestion based on weather conditions
     let congestionScore = 0
     if (data.precipitation > 20) congestionScore += 40
@@ -192,9 +189,9 @@ export class TrafficOptimizationProcessor implements IDataProcessor {
     return "LIGHT"
   }
 
-  private suggestAlternativeRoutes(data: ProcessedAirQualityData): string[] {
+  private suggestAlternativeRoutes(data: ProcessedWeatherData): string[] {
     const routes: string[] = []
-    const weatherIndex = data.aqi || calculateWeatherIndex(data)
+    const weatherIndex = data.weatherIndex || calculateWeatherIndex(data)
     
     if (weatherIndex > 100 || data.precipitation > 20 || data.windSpeed > 25) {
       routes.push("Main highways with better drainage")
@@ -222,24 +219,24 @@ export class EnergyEfficiencyProcessor implements IDataProcessor {
   private batchSize = 150
   private processingRate = 0
 
-  public async processData(data: any[]): Promise<ProcessedAirQualityData[]> {
+  public async processData(data: any[]): Promise<ProcessedWeatherData[]> {
     this.processingRate = data.length / 8 // Moderate processing speed
 
-    return data.map((airData: ProcessedAirQualityData) => ({
-      ...airData,
+    return data.map((weatherData: ProcessedWeatherData) => ({
+      ...weatherData,
       // Energy-focused processing: HVAC and building optimization
-      hvacRecommendations: this.generateHVACRecommendations(airData),
-      energyEfficiencyScore: this.calculateEnergyEfficiency(airData),
-      ventilationStrategy: this.determineVentilationStrategy(airData),
-      indoorAirQuality: this.predictIndoorAirQuality(airData),
+      hvacRecommendations: this.generateHVACRecommendations(weatherData),
+      energyEfficiencyScore: this.calculateEnergyEfficiency(weatherData),
+      ventilationStrategy: this.determineVentilationStrategy(weatherData),
+      indoorWeatherConditions: this.predictIndoorWeatherConditions(weatherData),
       processor_type: "ENERGY_EFFICIENCY",
       processed_at: new Date().toISOString()
     }))
   }
 
-  private generateHVACRecommendations(data: ProcessedAirQualityData): string[] {
+  private generateHVACRecommendations(data: ProcessedWeatherData): string[] {
     const recommendations: string[] = []
-    const weatherIndex = data.aqi || calculateWeatherIndex(data)
+    const weatherIndex = data.weatherIndex || calculateWeatherIndex(data)
     
     if (weatherIndex > 100 || data.temperature > 30 || data.temperature < 0) {
       recommendations.push("Increase HVAC efficiency settings")
@@ -263,8 +260,8 @@ export class EnergyEfficiencyProcessor implements IDataProcessor {
     return recommendations
   }
 
-  private calculateEnergyEfficiency(data: ProcessedAirQualityData): number {
-    const weatherIndex = data.aqi || calculateWeatherIndex(data)
+  private calculateEnergyEfficiency(data: ProcessedWeatherData): number {
+    const weatherIndex = data.weatherIndex || calculateWeatherIndex(data)
     const baseEfficiency = 100 - (weatherIndex / 3) // Higher weather index reduces efficiency
     const temperatureBonus = data.temperature && Math.abs(data.temperature - 22) < 3 ? 10 : 0
     const humidityBonus = data.humidity && data.humidity >= 40 && data.humidity <= 60 ? 5 : 0
@@ -272,16 +269,16 @@ export class EnergyEfficiencyProcessor implements IDataProcessor {
     return Math.round(Math.max(0, Math.min(100, baseEfficiency + temperatureBonus + humidityBonus)))
   }
 
-  private determineVentilationStrategy(data: ProcessedAirQualityData): string {
-    const weatherIndex = data.aqi || calculateWeatherIndex(data)
+  private determineVentilationStrategy(data: ProcessedWeatherData): string {
+    const weatherIndex = data.weatherIndex || calculateWeatherIndex(data)
     if (weatherIndex > 150 || data.temperature > 35 || data.temperature < -10) return "RECIRCULATION_ONLY"
-    if (weatherIndex > 100 || data.precipitation > 20 || data.windSpeed > 30) return "MINIMAL_FRESH_AIR"
+    if (weatherIndex > 100 || data.precipitation > 20 || data.windSpeed > 30) return "MINIMAL_FRESH_WEATHER"
     if (weatherIndex > 50 || data.precipitation > 10) return "BALANCED_VENTILATION"
     return "NATURAL_VENTILATION"
   }
 
-  private predictIndoorAirQuality(data: ProcessedAirQualityData): number {
-    const weatherIndex = data.aqi || calculateWeatherIndex(data)
+  private predictIndoorWeatherConditions(data: ProcessedWeatherData): number {
+    const weatherIndex = data.weatherIndex || calculateWeatherIndex(data)
     const reductionFactor = weatherIndex > 100 ? 0.3 : 0.5
     return Math.round(weatherIndex * (1 - reductionFactor))
   }
@@ -307,7 +304,7 @@ export class WeatherProcessingPipeline {
     this.processors.push(processor)
   }
 
-  public async processWeatherData(weatherData: ProcessedAirQualityData[]): Promise<{
+  public async processWeatherData(weatherData: ProcessedWeatherData[]): Promise<{
     healthAnalysis: any[];
     trafficOptimization: any[];
     energyEfficiency: any[];
@@ -347,16 +344,12 @@ export class WeatherProcessingPipeline {
     }
   }
 
-  // Backward compatibility
-  public async processAirQualityData(airQualityData: ProcessedAirQualityData[]): Promise<any> {
-    return this.processWeatherData(airQualityData)
-  }
 
   public getProcessingResults(): Map<string, any[]> {
     return this.processingResults
   }
 
-  public async demonstrateRealWorldPolymorphism(weatherData: ProcessedAirQualityData[]): Promise<{
+  public async demonstrateRealWorldPolymorphism(weatherData: ProcessedWeatherData[]): Promise<{
     summary: string;
     insights: any;
     recommendations: string[];

@@ -2,10 +2,6 @@ import { NextRequest, NextResponse } from 'next/server';
 import { DeepSeekInsightsService, WeatherData } from '@/lib/deepseek-service';
 import { getMultipleCitiesWeather } from '@/app/bigdata/WeatherQueries';
 
-// Backward compatibility
-const getMultipleCitiesAirQuality = getMultipleCitiesWeather
-type AirQualityData = WeatherData
-
 export async function GET() {
   try {
     if (!process.env.Deepseek_API_KEY) {
@@ -34,15 +30,7 @@ export async function GET() {
       pressure: city.pressure,
       weatherCondition: city.weatherCondition,
       timestamp: city.timestamp,
-      // Backward compatibility
-      aqi: city.aqi,
-      pm25: city.pm25 || 0,
-      pm10: city.pm10 || 0,
-      o3: city.o3 || 0,
-      no2: city.no2 || 0,
-      so2: city.so2 || 0,
-      co: city.co || 0,
-      dominentPollutant: city.dominantPollutant || 'Unknown'
+      weatherIndex: city.weatherIndex
     }));
 
     const deepSeekService = new DeepSeekInsightsService();
@@ -82,8 +70,8 @@ export async function POST(request: NextRequest) {
     }
 
     const body = await request.json();
-    const { airQualityData, weatherData } = body;
-    const dataToProcess = weatherData || airQualityData;
+    const { weatherData } = body;
+    const dataToProcess = weatherData;
 
     if (!dataToProcess || !Array.isArray(dataToProcess)) {
       return NextResponse.json(
@@ -100,7 +88,7 @@ export async function POST(request: NextRequest) {
       insights,
       metadata: {
         generatedAt: new Date().toISOString(),
-        citiesAnalyzed: airQualityData.length,
+        citiesAnalyzed: dataToProcess.length,
         model: 'deepseek-chat',
         source: 'DEEPSEEK_AI_ANALYSIS'
       }

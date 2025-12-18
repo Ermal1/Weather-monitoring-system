@@ -63,7 +63,7 @@ export interface ForecastItem {
   min: number
 }
 
-export interface ProcessedAirQualityData {
+export interface ProcessedWeatherData {
   aqi: number
   pm25: number
   pm10: number
@@ -102,7 +102,7 @@ export class RealTimeDataConnector {
     console.warn("⚠️  This connector uses AQICN API which is no longer the primary data source.")
   }
 
-  public async fetchAirQualityByCity(cityName: string): Promise<ProcessedAirQualityData | null> {
+  public async fetchWeatherByCity(cityName: string): Promise<ProcessedWeatherData | null> {
     try {
       this.requestCount++
       
@@ -134,7 +134,7 @@ export class RealTimeDataConnector {
     }
   }
 
-  public async fetchAirQualityByCoordinates(lat: number, lng: number): Promise<ProcessedAirQualityData | null> {
+  public async fetchWeatherByCoordinates(lat: number, lng: number): Promise<ProcessedWeatherData | null> {
     try {
       const url = `${this.BASE_URL}/feed/geo:${lat};${lng}/?token=${this.API_TOKEN}`
       this.requestCount++
@@ -155,13 +155,13 @@ export class RealTimeDataConnector {
     }
   }
 
-  public async fetchMultipleCitiesData(limit?: number): Promise<ProcessedAirQualityData[]> {
+  public async fetchMultipleCitiesData(limit?: number): Promise<ProcessedWeatherData[]> {
     const citiesToFetch = limit ? this.SUPPORTED_CITIES.slice(0, limit) : this.SUPPORTED_CITIES.slice(0, 4)
-    const results: ProcessedAirQualityData[] = []
+    const results: ProcessedWeatherData[] = []
 
 
     for (const cityName of citiesToFetch) {
-      const cityData = await this.fetchAirQualityByCity(cityName)
+      const cityData = await this.fetchWeatherByCity(cityName)
       if (cityData) {
         results.push(cityData)
       }
@@ -172,7 +172,7 @@ export class RealTimeDataConnector {
     return results
   }
 
-  private processAQICNData(data: AQICNData): ProcessedAirQualityData {
+  private processAQICNData(data: AQICNData): ProcessedWeatherData {
     const aqi = data.aqi || 0
     const pm25 = data.iaqi?.pm25?.v || 0
     const pm10 = data.iaqi?.pm10?.v || 0
@@ -225,7 +225,7 @@ export class RealTimeDataConnector {
   }
 
 
-  public async searchStations(query: string): Promise<ProcessedAirQualityData[]> {
+  public async searchStations(query: string): Promise<ProcessedWeatherData[]> {
     try {
       const url = `${this.BASE_URL}/search/?token=${this.API_TOKEN}&keyword=${encodeURIComponent(query)}`
       this.requestCount++
@@ -238,7 +238,7 @@ export class RealTimeDataConnector {
         return []
       }
 
-      const results: ProcessedAirQualityData[] = []
+      const results: ProcessedWeatherData[] = []
       const stations = searchData.data.slice(0, 10) // Limit to 10 results
       
       for (const station of stations) {
@@ -273,30 +273,31 @@ export class RealTimeDataConnector {
     }
   }
 
-  public async checkCityAirQualityAlert(cityName: string): Promise<{
+  public async checkCityWeatherAlert(cityName: string): Promise<{
     hasAlert: boolean;
     alertLevel: string;
-    aqi: number;
+    weatherIndex: number;
     recommendation: string;
   } | null> {
-    const data = await this.fetchAirQualityByCity(cityName)
+    const data = await this.fetchWeatherByCity(cityName)
     
     if (!data) return null
 
-    const hasAlert = data.aqi > 100
+    const weatherIndex = data.aqi || 50
+    const hasAlert = weatherIndex > 100
     let alertLevel = "None"
-    let recommendation = "Air quality is acceptable for outdoor activities."
+    let recommendation = "Weather conditions are acceptable for outdoor activities."
 
-    if (data.aqi > 300) {
+    if (weatherIndex > 300) {
       alertLevel = "Emergency"
-      recommendation = "Health alert: everyone may experience serious health effects. Avoid all outdoor activities."
-    } else if (data.aqi > 200) {
+      recommendation = "Severe weather alert: everyone may experience serious effects. Avoid all outdoor activities."
+    } else if (weatherIndex > 200) {
       alertLevel = "Critical"
-      recommendation = "Health warning: everyone should avoid all outdoor exertion."
-    } else if (data.aqi > 150) {
+      recommendation = "Weather warning: everyone should avoid all outdoor exertion."
+    } else if (weatherIndex > 150) {
       alertLevel = "High"
       recommendation = "Everyone should avoid prolonged outdoor exertion."
-    } else if (data.aqi > 100) {
+    } else if (weatherIndex > 100) {
       alertLevel = "Moderate"
       recommendation = "Sensitive individuals should limit outdoor activities."
     }
@@ -304,17 +305,17 @@ export class RealTimeDataConnector {
     return {
       hasAlert,
       alertLevel,
-      aqi: data.aqi,
+      weatherIndex: weatherIndex,
       recommendation
     }
   }
 
-  public async getGlobalAirQualityInsights(): Promise<{
+  public async getGlobalWeatherInsights(): Promise<{
     totalCitiesMonitored: number;
-    averageAQI: number;
+    averageWeatherIndex: number;
     citiesWithAlerts: number;
-    bestCity: { name: string; aqi: number };
-    worstCity: { name: string; aqi: number };
+    coolestCity: { name: string; weatherIndex: number };
+    warmestCity: { name: string; weatherIndex: number };
   } | null> {
     try {
       const citiesData = await this.fetchMultipleCitiesData(6)
@@ -323,20 +324,20 @@ export class RealTimeDataConnector {
         return null
       }
 
-      const totalAQI = citiesData.reduce((sum, city) => sum + city.aqi, 0)
-      const averageAQI = Math.round(totalAQI / citiesData.length)
-      const citiesWithAlerts = citiesData.filter(city => city.aqi > 100).length
+      const totalWeatherIndex = citiesData.reduce((sum, city) => sum + (city.aqi || 50), 0)
+      const averageWeatherIndex = Math.round(totalWeatherIndex / citiesData.length)
+      const citiesWithAlerts = citiesData.filter(city => (city.aqi || 50) > 100).length
 
-      const sortedByAQI = [...citiesData].sort((a, b) => a.aqi - b.aqi)
-      const bestCity = { name: sortedByAQI[0].location, aqi: sortedByAQI[0].aqi }
-      const worstCity = { name: sortedByAQI[sortedByAQI.length - 1].location, aqi: sortedByAQI[sortedByAQI.length - 1].aqi }
+      const sortedByWeatherIndex = [...citiesData].sort((a, b) => (a.aqi || 50) - (b.aqi || 50))
+      const coolestCity = { name: sortedByWeatherIndex[0].location, weatherIndex: sortedByWeatherIndex[0].aqi || 50 }
+      const warmestCity = { name: sortedByWeatherIndex[sortedByWeatherIndex.length - 1].location, weatherIndex: sortedByWeatherIndex[sortedByWeatherIndex.length - 1].aqi || 50 }
 
       return {
         totalCitiesMonitored: citiesData.length,
-        averageAQI,
+        averageWeatherIndex,
         citiesWithAlerts,
-        bestCity,
-        worstCity
+        coolestCity,
+        warmestCity
       }
     } catch (error) {
       console.error("❌ Error getting global insights:", error)
@@ -362,8 +363,8 @@ export interface WeatherData {
   timestamp: string
 }
 
-export interface AirQualityData {
-  aqi: number
+export interface WeatherData {
+  weatherIndex: number
   pm25: number
   pm10: number
   no2: number

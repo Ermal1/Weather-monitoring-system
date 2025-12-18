@@ -34,8 +34,6 @@ export interface WeatherData {
   dominentPollutant?: string;
 }
 
-// Backward compatibility
-export interface AirQualityData extends WeatherData {}
 
 export class DeepSeekInsightsService {
   private apiKey: string;

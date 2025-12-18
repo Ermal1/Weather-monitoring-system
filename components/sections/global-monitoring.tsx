@@ -6,8 +6,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Alert, AlertDescription } from "@/components/ui/alert"
-import { getWeatherByCity, getGlobalWeatherInsights, weatherQueryKeys } from '@/app/bigdata/WeatherQueries'
-import { aqicnQueryKeys } from '@/app/bigdata/WeatherQueries' // Backward compatibility
+import { getWeatherByCity, weatherQueryKeys } from '@/app/bigdata/WeatherQueries'
 import { CheckCircle, Sparkles } from 'lucide-react'
 import AnimatedCounter from '@/components/magic-ui/animated-counter'
 
@@ -174,7 +173,14 @@ function WeatherCard({ city }: { city: string }) {
 function GlobalInsightsWidget() {
   const { data: insights, isLoading, error } = useQuery({
     queryKey: weatherQueryKeys.globalInsights(),
-    queryFn: getGlobalWeatherInsights,
+    queryFn: async () => {
+      const response = await fetch('/api/weather?type=global-insights')
+      if (!response.ok) {
+        throw new Error('Failed to fetch global insights')
+      }
+      const result = await response.json()
+      return result.data
+    },
     staleTime: 10 * 60 * 1000, // 10 minutes
     refetchInterval: 15 * 60 * 1000, // Refetch every 15 minutes
   })
@@ -210,9 +216,9 @@ function GlobalInsightsWidget() {
   }
 
   // Use actual temperature data
-  const avgTemp = insights.averageTemperature || Math.round(20 + ((insights.averageAQI || 75) * 0.1))
-  const coolestTemp = insights.coolestCity?.temperature || (insights.bestCity && 'aqi' in insights.bestCity ? Math.round(15 + ((insights.bestCity.aqi || 50) * 0.1)) : 15)
-  const warmestTemp = insights.warmestCity?.temperature || (insights.worstCity && 'aqi' in insights.worstCity ? Math.round(25 + ((insights.worstCity.aqi || 100) * 0.1)) : 25)
+  const avgTemp = insights.averageTemperature || 20
+  const coolestTemp = insights.coolestCity?.temperature || 15
+  const warmestTemp = insights.warmestCity?.temperature || 25
 
   return (
     <Card>
@@ -232,11 +238,11 @@ function GlobalInsightsWidget() {
           </div>
           <div className="text-center">
             <div className="text-2xl font-bold text-green-600">{coolestTemp}°C</div>
-            <div className="text-sm text-gray-500">Coolest: {insights.coolestCity?.name || insights.bestCity?.name}</div>
+            <div className="text-sm text-gray-500">Coolest: {insights.coolestCity?.name || 'N/A'}</div>
           </div>
           <div className="text-center">
             <div className="text-2xl font-bold text-orange-600">{warmestTemp}°C</div>
-            <div className="text-sm text-gray-500">Warmest: {insights.warmestCity?.name || insights.worstCity?.name}</div>
+            <div className="text-sm text-gray-500">Warmest: {insights.warmestCity?.name || 'N/A'}</div>
           </div>
         </div>
 

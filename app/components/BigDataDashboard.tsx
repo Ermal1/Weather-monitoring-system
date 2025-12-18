@@ -3,9 +3,6 @@
 import { useState, useEffect } from "react"
 import { BigDataSystemManager } from "../core/BigDataSystemManager"
 import { WeatherProcessingPipeline } from "../core/PolymorphismDemo"
-
-// Backward compatibility
-const AirQualityProcessingPipeline = WeatherProcessingPipeline
 import { supabase } from "../../lib/supabase"
 import {
   Activity,

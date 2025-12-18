@@ -1,9 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getMultipleCitiesWeather, getGlobalWeatherInsights } from '@/app/bigdata/WeatherQueries'
-
-// Backward compatibility
-const getMultipleCitiesAirQuality = getMultipleCitiesWeather
-const getGlobalAirQualityInsights = getGlobalWeatherInsights
 import { createDeepSeek } from '@ai-sdk/deepseek'
 import { generateText } from 'ai'
 
@@ -19,8 +15,8 @@ export async function POST(request: NextRequest) {
     }
 
     const [citiesData, globalInsights] = await Promise.all([
-      getMultipleCitiesAirQuality(10), 
-      getGlobalAirQualityInsights()
+      getMultipleCitiesWeather(10), 
+      getGlobalWeatherInsights()
     ])
 
     const currentData = citiesData.map(city => ({
@@ -31,11 +27,7 @@ export async function POST(request: NextRequest) {
       windSpeed: city.windSpeed,
       pressure: city.pressure,
       weatherCondition: city.weatherCondition,
-      // Backward compatibility
-      aqi: city.aqi,
-      healthLevel: city.healthLevel,
-      pm25: city.pm25,
-      dominantPollutant: city.dominantPollutant,
+      weatherIndex: city.weatherIndex,
       timestamp: city.timestamp
     }))
 
@@ -49,10 +41,10 @@ ${currentData.map(city =>
 
 GLOBAL INSIGHTS:
 • Cities monitored: ${globalInsights?.totalCitiesMonitored || 'N/A'}
-• Average Temperature: ${globalInsights?.averageTemperature || globalInsights?.averageAQI || 'N/A'}°C
+• Average Temperature: ${globalInsights?.averageTemperature || 'N/A'}°C
 • Cities with alerts: ${globalInsights?.citiesWithAlerts || 'N/A'}
-• Coolest weather: ${globalInsights?.coolestCity?.name || globalInsights?.bestCity?.name || 'N/A'} (${globalInsights?.coolestCity?.temperature || globalInsights?.bestCity?.aqi || 'N/A'}°C)
-• Warmest weather: ${globalInsights?.warmestCity?.name || globalInsights?.worstCity?.name || 'N/A'} (${globalInsights?.warmestCity?.temperature || globalInsights?.worstCity?.aqi || 'N/A'}°C)
+• Coolest weather: ${globalInsights?.coolestCity?.name || 'N/A'} (${globalInsights?.coolestCity?.temperature || 'N/A'}°C)
+• Warmest weather: ${globalInsights?.warmestCity?.name || 'N/A'} (${globalInsights?.warmestCity?.temperature || 'N/A'}°C)
 
 Use this real-time data to provide accurate, current information about weather conditions. When users ask about specific cities, reference the actual current weather data above.
 
@@ -65,12 +57,12 @@ User message: ${message}`
 
     if (!apiKey) {
       console.log('⚠️ DeepSeek API key not found, using fallback response')
-               const alertCities = currentData.filter(city => city.aqi > 100)
-        const goodCities = currentData.filter(city => city.aqi <= 50)
+               const alertCities = currentData.filter(city => (city.weatherIndex || 0) > 100 || city.temperature > 35 || city.temperature < -10)
+        const goodCities = currentData.filter(city => (city.weatherIndex || 0) <= 50 && city.temperature >= -10 && city.temperature <= 35)
         
-        const sortedCities = [...currentData].sort((a, b) => a.aqi - b.aqi)
-        const bestCity = sortedCities[0]
-        const worstCity = sortedCities[sortedCities.length - 1]
+        const sortedCities = [...currentData].sort((a, b) => a.temperature - b.temperature)
+        const coolestCity = sortedCities[0]
+        const warmestCity = sortedCities[sortedCities.length - 1]
         
         const isAskingForWeatherDetails = message.toLowerCase().includes('temperature') || 
                                     message.toLowerCase().includes('humidity') || 
@@ -97,8 +89,8 @@ User message: ${message}`
               `⚠️ **Cities with Weather Alerts**: ${alertCities.map(c => `${c.city.split(',')[0]} (${c.temperature}°C)`).join(', ')}\n\n` : '') +
             (goodCities.length > 0 ? 
               `✅ **Good Weather Conditions**: ${goodCities.map(c => `${c.city.split(',')[0]} (${c.temperature}°C, ${c.weatherCondition})`).join(', ')}\n\n` : '') +
-            `🏆 **Best**: ${bestCity?.city.split(',')[0] || 'N/A'} (AQI ${bestCity?.aqi || 'N/A'})\n` +
-            `📉 **Worst**: ${worstCity?.city.split(',')[0] || 'N/A'} (AQI ${worstCity?.aqi || 'N/A'})\n\n` +
+            `❄️ **Coolest**: ${coolestCity?.city.split(',')[0] || 'N/A'} (${coolestCity?.temperature || 'N/A'}°C)\n` +
+            `🌡️ **Warmest**: ${warmestCity?.city.split(',')[0] || 'N/A'} (${warmestCity?.temperature || 'N/A'}°C)\n\n` +
             `*Note: DeepSeek AI is not configured. Showing current live data.*`
         }
      } else {
@@ -114,7 +106,7 @@ User message: ${message}`
     return NextResponse.json({
       success: true,
       response: response,
-      dataSource: 'Real-time AQICN + AI Analysis',
+      dataSource: 'Real-time Weather Data + AI Analysis',
       citiesIncluded: currentData.length,
       lastUpdate: new Date().toISOString()
     })

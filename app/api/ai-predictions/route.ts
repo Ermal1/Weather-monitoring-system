@@ -3,11 +3,6 @@ import { getMultipleCitiesWeather } from '@/app/bigdata/WeatherQueries'
 import { WeatherProcessingPipeline } from '@/app/core/PolymorphismDemo'
 import { DeepSeekInsightsService, WeatherData } from '@/lib/deepseek-service'
 
-// Backward compatibility
-const getMultipleCitiesAirQuality = getMultipleCitiesWeather
-const AirQualityProcessingPipeline = WeatherProcessingPipeline
-type AirQualityData = WeatherData
-
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
@@ -66,15 +61,7 @@ export async function POST(request: NextRequest) {
           pressure: data.pressure,
           weatherCondition: data.weatherCondition,
           timestamp: data.timestamp,
-          // Backward compatibility
-          aqi: data.aqi,
-          pm25: data.pm25 || 0,
-          pm10: data.pm10 || 0,
-          o3: data.o3 || 0,
-          no2: data.no2 || 0,
-          so2: data.so2 || 0,
-          co: data.co || 0,
-          dominentPollutant: data.dominantPollutant || 'Unknown'
+          weatherIndex: data.weatherIndex
         }))
         
         deepseekInsights = await deepSeekService.generateInsights(weatherForDeepSeek)

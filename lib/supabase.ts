@@ -11,22 +11,19 @@ export const supabase = createClient<Database>(supabaseUrl, supabaseAnonKey, {
     },
   },
 })
-
+console.log("supabase", supabase);
 export type Tables<T extends keyof Database["public"]["Tables"]> = Database["public"]["Tables"][T]["Row"]
 
 // Weather specific types  
 // Note: Using cached_weather_data table for weather monitoring
 export type WeatherData = Tables<"cached_weather_data">
-export type AirQualityData = WeatherData // Backward compatibility
 
 export type RealtimeWeatherPayload = {
   new: WeatherData
   old: WeatherData | null
   eventType: 'INSERT' | 'UPDATE' | 'DELETE'
 }
-export type RealtimeAirQualityPayload = RealtimeWeatherPayload // Backward compatibility
 
 export function createWeatherChannel(channelName: string = 'weather-updates') {
   return supabase.channel(channelName)
 }
-export const createAirQualityChannel = createWeatherChannel // Backward compatibility

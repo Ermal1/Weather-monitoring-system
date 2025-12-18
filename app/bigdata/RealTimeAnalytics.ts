@@ -11,18 +11,11 @@ import {
 } from "./WeatherQueries";
 import type { ProcessedWeatherData } from "./WeatherQueries";
 
-// Backward compatibility
-const getAirQualityByCity = getWeatherByCity
-const getMultipleCitiesAirQuality = getMultipleCitiesWeather
-const getGlobalAirQualityInsights = getGlobalWeatherInsights
-const getAQICNAPIStats = getWeatherAPIStats
-type ProcessedAirQualityData = ProcessedWeatherData
-
 const multiCityConnector = new MultiCityDataConnector();
 
 const inMemoryCache = new Map<
   string,
-  { data: ProcessedAirQualityData; timestamp: number }
+  { data: ProcessedWeatherData; timestamp: number }
 >();
 
 interface AnomalyDetectionResult {
@@ -103,7 +96,7 @@ export class RealTimeAnalytics {
         "../../lib/deepseek-service"
       );
 
-      const weatherData = await getMultipleCitiesAirQuality(10);
+      const weatherData = await getMultipleCitiesWeather(10);
       
       if (!weatherData || weatherData.length === 0) {
         console.warn("No weather data available for AI analysis");
@@ -118,16 +111,8 @@ export class RealTimeAnalytics {
         windSpeed: city.windSpeed,
         pressure: city.pressure,
         weatherCondition: city.weatherCondition,
-        // Backward compatibility
-        aqi: city.aqi,
-        pm25: city.pm25 || 0,
-        pm10: city.pm10 || 0,
-        o3: city.o3 || 0,
-        no2: city.no2 || 0,
-        so2: city.so2 || 0,
-        co: city.co || 0,
+        weatherIndex: city.weatherIndex,
         timestamp: city.timestamp,
-        dominentPollutant: city.dominantPollutant,
       }));
 
       const deepSeekService = new DeepSeekInsightsService();
@@ -165,7 +150,7 @@ export class RealTimeAnalytics {
 
   public async getCachedCityData(
     cityName: string
-  ): Promise<ProcessedAirQualityData | null> {
+  ): Promise<ProcessedWeatherData | null> {
     try {
       const cacheKey = `city_${cityName}`;
       const cached = inMemoryCache.get(cacheKey);
@@ -187,8 +172,8 @@ export class RealTimeAnalytics {
 
       if (data && data.length > 0) {
         const cachedData = data[0];
-        const processedData: ProcessedAirQualityData = {
-          aqi: cachedData.weather_index || cachedData.aqi, // Use weather_index, fallback to aqi for backward compatibility
+        const processedData: ProcessedWeatherData = {
+          weatherIndex: cachedData.weather_index || 50,
           pm25: Number(cachedData.pm25) || 0,
           pm10: Number(cachedData.pm10) || 0,
           no2: Number(cachedData.no2) || 0,
@@ -223,7 +208,7 @@ export class RealTimeAnalytics {
         return processedData;
       }
 
-      const freshData = await getAirQualityByCity(cityName);
+      const freshData = await getWeatherByCity(cityName);
 
       if (freshData) {
         if (freshData.apiSource !== "CACHED") {
@@ -240,7 +225,7 @@ export class RealTimeAnalytics {
       console.error(`Error getting cached data for ${cityName}:`, error);
 
       try {
-        const fallbackData = await getAirQualityByCity(cityName);
+        const fallbackData = await getWeatherByCity(cityName);
         this.apiCallsToday++;
         return fallbackData;
       } catch (fallbackError) {
@@ -252,11 +237,11 @@ export class RealTimeAnalytics {
 
   public async cacheDataToSupabase(
     cityName: string,
-    data: ProcessedAirQualityData
+    data: ProcessedWeatherData
   ): Promise<void> {
     try {
-      // Use weather_index (required) - map from aqi if available
-      const weatherIndex = data.aqi ? Number(data.aqi) : 50;
+      // Use weather_index (required)
+      const weatherIndex = data.weatherIndex ? Number(data.weatherIndex) : 50;
       
       const cacheEntry = {
         city_name: cityName || "Unknown",
@@ -351,7 +336,7 @@ export class RealTimeAnalytics {
       const cityResults = await Promise.all(cityDataPromises);
       const validResults = cityResults.filter(
         (result) => result !== null
-      ) as ProcessedAirQualityData[];
+      ) as ProcessedWeatherData[];
 
       if (validResults.length > 0) {
         this.processedDataPoints += validResults.length * 7;
@@ -407,7 +392,7 @@ export class RealTimeAnalytics {
     if (!this.isRunning) return;
 
     try {
-      const citiesData = await getMultipleCitiesAirQuality(15);
+      const citiesData = await getMultipleCitiesWeather(15);
 
       if (citiesData.length > 0) {
         this.processedDataPoints += citiesData.length * 7;
@@ -455,36 +440,37 @@ export class RealTimeAnalytics {
   }
 
   private detectAnomalies(
-    citiesData: ProcessedAirQualityData[]
+    citiesData: ProcessedWeatherData[]
   ): AnomalyDetectionResult[] {
     const anomalies: AnomalyDetectionResult[] = [];
 
-    const aqiValues = citiesData.map((city) => city.aqi);
-    const avgAQI =
-      aqiValues.reduce((sum, aqi) => sum + aqi, 0) / aqiValues.length;
-    const stdDevAQI = Math.sqrt(
-      aqiValues.reduce((sum, aqi) => sum + Math.pow(aqi - avgAQI, 2), 0) /
-        aqiValues.length
+    const weatherIndexValues = citiesData.map((city) => city.weatherIndex || 50);
+    const avgWeatherIndex =
+      weatherIndexValues.reduce((sum, idx) => sum + idx, 0) / weatherIndexValues.length;
+    const stdDevWeatherIndex = Math.sqrt(
+      weatherIndexValues.reduce((sum, idx) => sum + Math.pow(idx - avgWeatherIndex, 2), 0) /
+        weatherIndexValues.length
     );
 
     citiesData.forEach((city) => {
-      const aqiZScore = Math.abs((city.aqi - avgAQI) / stdDevAQI);
+      const weatherIndexCities = city.weatherIndex || 50;
+      const zScore = Math.abs((weatherIndexCities - avgWeatherIndex) / (stdDevWeatherIndex || 1));
 
-      if (aqiZScore > this.anomalyThreshold) {
+      if (zScore > this.anomalyThreshold) {
         const severity =
-          aqiZScore > 3 ? "CRITICAL" : aqiZScore > 2.5 ? "HIGH" : "MEDIUM";
+          zScore > 3 ? "CRITICAL" : zScore > 2.5 ? "HIGH" : "MEDIUM";
 
         anomalies.push({
-          type: city.aqi > avgAQI ? "WEATHER_ALERT" : "UNUSUAL_PATTERN",
+          type: weatherIndexCities > avgWeatherIndex ? "WEATHER_ALERT" : "UNUSUAL_PATTERN",
           city: city.location,
           severity,
-          confidence: Math.min(95, Math.round(aqiZScore * 30)),
+          confidence: Math.min(95, Math.round(zScore * 30)),
           prediction:
-            city.aqi > avgAQI
+            weatherIndexCities > avgWeatherIndex
               ? `Severe weather conditions detected in ${city.location} (Weather Index: ${
-                  city.aqi
-                }). ${aqiZScore.toFixed(1)}σ above normal.`
-              : `Unusual weather pattern in ${city.location} (Weather Index: ${city.aqi}). Requires investigation.`,
+                  weatherIndexCities
+                }). ${zScore.toFixed(1)}σ above normal.`
+              : `Unusual weather pattern in ${city.location} (Weather Index: ${weatherIndexCities}). Requires investigation.`,
           dataSource: city.apiSource,
           timeframe: "Real-time",
           impact: severity,
@@ -492,17 +478,33 @@ export class RealTimeAnalytics {
         });
       }
 
-      if (city.aqi > 150) {
+      const weatherIndex = city.weatherIndex || 50
+      if (weatherIndex > 150) {
         anomalies.push({
           type: "HEALTH_ALERT",
           city: city.location,
           severity:
-            city.aqi > 300 ? "CRITICAL" : city.aqi > 200 ? "HIGH" : "MEDIUM",
+            weatherIndex > 300 ? "CRITICAL" : weatherIndex > 200 ? "HIGH" : "MEDIUM",
           confidence: 95,
-          prediction: `Weather alert for ${city.location}: ${city.healthLevel} weather conditions (Weather Index: ${city.aqi}). Outdoor activities not recommended.`,
+          prediction: `Weather alert for ${city.location}: Severe weather conditions (Weather Index: ${weatherIndex}). Outdoor activities not recommended.`,
           dataSource: city.apiSource,
           timeframe: "Immediate",
-          impact: city.aqi > 300 ? "CRITICAL" : "HIGH",
+          impact: weatherIndex > 300 ? "CRITICAL" : "HIGH",
+          detectedAt: new Date().toISOString(),
+        });
+      }
+
+      // Check for temperature extremes
+      if (city.temperature > 35 || city.temperature < -10) {
+        anomalies.push({
+          type: "TEMPERATURE_EXTREME",
+          city: city.location,
+          severity: city.temperature > 40 || city.temperature < -15 ? "CRITICAL" : "HIGH",
+          confidence: 95,
+          prediction: `Extreme temperature in ${city.location}: ${city.temperature}°C`,
+          dataSource: city.apiSource,
+          timeframe: "Immediate",
+          impact: "HIGH",
           detectedAt: new Date().toISOString(),
         });
       }
@@ -513,7 +515,13 @@ export class RealTimeAnalytics {
 
   public async getLiveDataDashboard() {
     try {
-      const globalInsights = await getGlobalAirQualityInsights();
+      let globalInsights
+      try {
+        globalInsights = await getGlobalWeatherInsights()
+      } catch (error) {
+        console.warn('⚠️ Failed to get global weather insights, using fallback:', error)
+        globalInsights = null
+      }
 
       const uptimeHours = Math.floor(
         (Date.now() - this.systemStartTime) / (1000 * 60 * 60)
@@ -540,8 +548,6 @@ export class RealTimeAnalytics {
         },
         dataSourceStatus: {
           weatherAPI: true,
-          // Backward compatibility
-          aqicnAPI: true,
           multiCityConnector: true,
           supabaseDB: true,
           realTimeProcessing: this.isRunning,
@@ -572,8 +578,6 @@ export class RealTimeAnalytics {
         },
         dataSourceStatus: {
           weatherAPI: true,
-          // Backward compatibility
-          aqicnAPI: true,
           multiCityConnector: true,
           supabaseDB: true,
           realTimeProcessing: this.isRunning,

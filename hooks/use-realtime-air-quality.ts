@@ -1,15 +1,15 @@
 'use client'
 
 import { useEffect, useRef, useState, useCallback } from 'react'
-import { supabase, createAirQualityChannel, type AirQualityData } from '@/lib/supabase'
+import { supabase, createWeatherChannel, type WeatherData } from '@/lib/supabase'
 import { useQueryClient } from '@tanstack/react-query'
-import { weatherQueryKeys, aqicnQueryKeys } from '@/app/bigdata/WeatherQueries'
+import { weatherQueryKeys } from '@/app/bigdata/WeatherQueries'
 
 interface UseRealtimeWeatherOptions {
   enabled?: boolean
-  onUpdate?: (data: AirQualityData) => void
-  onInsert?: (data: AirQualityData) => void
-  onDelete?: (data: AirQualityData) => void
+  onUpdate?: (data: WeatherData) => void
+  onInsert?: (data: WeatherData) => void
+  onDelete?: (data: WeatherData) => void
 }
 
 export function useRealtimeWeather(options: UseRealtimeWeatherOptions = {}) {
@@ -25,7 +25,7 @@ export function useRealtimeWeather(options: UseRealtimeWeatherOptions = {}) {
     console.log('🆕 New weather data received:', payload.new)
     setLastUpdate(new Date())
     queryClient.invalidateQueries({ queryKey: weatherQueryKeys.globalInsights() })
-    options.onInsert?.(payload.new as AirQualityData)
+    options.onInsert?.(payload.new as WeatherData)
   }, [queryClient, options.onInsert])
 
   const handleUpdate = useCallback((payload: any) => {
@@ -39,14 +39,14 @@ export function useRealtimeWeather(options: UseRealtimeWeatherOptions = {}) {
     }
     
     queryClient.invalidateQueries({ queryKey: weatherQueryKeys.globalInsights() })
-    options.onUpdate?.(payload.new as AirQualityData)
+    options.onUpdate?.(payload.new as WeatherData)
   }, [queryClient, options.onUpdate])
 
   const handleDelete = useCallback((payload: any) => {
     console.log('🗑️ Weather data deleted:', payload.old)
     setLastUpdate(new Date())
     queryClient.invalidateQueries({ queryKey: weatherQueryKeys.globalInsights() })
-    options.onDelete?.(payload.old as AirQualityData)
+    options.onDelete?.(payload.old as WeatherData)
   }, [queryClient, options.onDelete])
 
   useEffect(() => {
@@ -62,7 +62,7 @@ export function useRealtimeWeather(options: UseRealtimeWeatherOptions = {}) {
     }
 
     // Create the real-time channel
-    const channel = createAirQualityChannel('weather-monitor-realtime')
+    const channel = createWeatherChannel('weather-monitor-realtime')
     channelRef.current = channel
 
     // Subscribe to events
@@ -131,7 +131,3 @@ export function useRealtimeWeather(options: UseRealtimeWeatherOptions = {}) {
 export function useRealtimeCityWeather(cityName: string, enabled = true) {
   return useRealtimeWeather({ enabled })
 }
-
-// Keep old export for backward compatibility
-export const useRealtimeAirQuality = useRealtimeWeather
-export const useRealtimeCityAirQuality = useRealtimeCityWeather 

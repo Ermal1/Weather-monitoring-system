@@ -107,7 +107,7 @@ export class WeatherAPIConnector {
         console.warn('⚠️ OpenWeatherMap API key not found. Using fallback data.')
         return null
       }
-
+debugger;
       const url = `${this.API_BASE_URL}/weather?lat=${lat}&lon=${lng}&appid=${this.API_KEY}&units=metric`
       
       const response = await fetch(url, {
@@ -326,7 +326,8 @@ export class WeatherAPIConnector {
       const data = citiesData || await this.fetchMultipleCitiesWeather(15)
       
       if (data.length === 0) {
-        throw new Error('No city weather data available for insights')
+        console.warn('⚠️ No city weather data available for insights, returning null')
+        return null
       }
 
       // Calculate average temperature instead of AQI

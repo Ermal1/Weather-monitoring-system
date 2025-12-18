@@ -10,10 +10,10 @@ import * as WeatherQueries from './WeatherQueries'
 export const aqicnQueryKeys = WeatherQueries.weatherQueryKeys
 
 // Re-export types and functions from WeatherQueries for backward compatibility
-export type ProcessedAirQualityData = WeatherQueries.ProcessedWeatherData
+export type ProcessedWeatherData = WeatherQueries.ProcessedWeatherData
 
-export const getAirQualityByCity = WeatherQueries.getWeatherByCity
-export const getMultipleCitiesAirQuality = WeatherQueries.getMultipleCitiesWeather
-export const getGlobalAirQualityInsights = WeatherQueries.getGlobalWeatherInsights
-export const getCityAirQualityAlert = WeatherQueries.getCityWeatherAlert
-export const getAQICNAPIStats = WeatherQueries.getWeatherAPIStats 
+export const getWeatherByCity = WeatherQueries.getWeatherByCity
+export const getMultipleCitiesWeather = WeatherQueries.getMultipleCitiesWeather
+export const getGlobalWeatherInsights = WeatherQueries.getGlobalWeatherInsights
+export const getCityWeatherAlert = WeatherQueries.getCityWeatherAlert
+export const getWeatherAPIStats = WeatherQueries.getWeatherAPIStats 

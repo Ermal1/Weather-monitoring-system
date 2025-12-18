@@ -78,7 +78,7 @@ export default function ProjectProposalPage() {
                 <div>
                   <h4 className="font-semibold mb-3 text-lg">Challenge</h4>
                   <p className="text-gray-700">
-                    Urban areas face increasing air pollution challenges, but citizens and city planners lack access to real-time, 
+                    Urban areas face increasing weather challenges, but citizens and city planners lack access to real-time, 
                     actionable weather insights. Traditional monitoring systems provide delayed, fragmented data that doesn't 
                     enable proactive health protection or informed decision-making.
                   </p>
@@ -111,7 +111,7 @@ export default function ProjectProposalPage() {
                       <div className="flex items-start gap-2">
                         <div className="w-2 h-2 rounded-full mt-2"></div>
                         <div>
-                          <strong>Economic Cost:</strong> Poor air quality reduces productivity and increases healthcare costs
+                          <strong>Economic Cost:</strong> Poor weather conditions reduce productivity and increase healthcare costs
                         </div>
                       </div>
                     </div>
@@ -151,7 +151,7 @@ export default function ProjectProposalPage() {
                 <div>
                   <h4 className="font-semibold mb-3 text-xl">Weather Monitor System</h4>
                   <p className="text-gray-700 mb-4">
-                    We propose developing a comprehensive <strong>real-time air quality monitoring and analytics system</strong> that:
+                    We propose developing a comprehensive <strong>real-time weather monitoring and analytics system</strong> that:
                   </p>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="space-y-2">
@@ -161,7 +161,7 @@ export default function ProjectProposalPage() {
                       </div>
                       <div className="flex items-center gap-2 p-3  rounded-lg">
                         <TrendingUp className="h-5 w-5 " />
-                        <span><strong>Provides Real-time Insights:</strong> Delivers immediate air quality updates and health recommendations</span>
+                        <span><strong>Provides Real-time Insights:</strong> Delivers immediate weather updates and health recommendations</span>
                       </div>
                     </div>
                     <div className="space-y-2">
@@ -185,7 +185,7 @@ export default function ProjectProposalPage() {
                       <ul className="space-y-1 text-blue-800 text-sm">
                         <li><strong>Volume:</strong> 15+ cities × 15 data points × 720 cycles/day = 162,000+ data points daily</li>
                         <li><strong>Velocity:</strong> Real-time API integration with 30-second update cycles</li>
-                        <li><strong>Variety:</strong> Air quality indices, weather data, health recommendations, traffic predictions</li>
+                        <li><strong>Variety:</strong> Weather indices, weather data, health recommendations, traffic predictions</li>
                         <li><strong>Veracity:</strong> Government monitoring stations, embassy sensors, verified API sources</li>
                       </ul>
                     </div>
@@ -219,7 +219,7 @@ export default function ProjectProposalPage() {
                   <h4 className="font-semibold mb-3 text-lg">Core Features</h4>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="p-4 rounded-lg">
-                      <h5 className="font-semibold mb-2">1. Real-time Air Quality Dashboard</h5>
+                      <h5 className="font-semibold mb-2">1. Real-time Weather Dashboard</h5>
                       <ul className="space-y-1 text-sm">
                         <li>• Live data from 6 major global cities</li>
                         <li>• Color-coded health level indicators</li>
@@ -282,7 +282,7 @@ export default function ProjectProposalPage() {
                       <div className="p-3 bg-gray-50 rounded-lg">
                         <strong>3. API Integration</strong>
                         <div className="text-sm text-gray-600 mt-1">
-                          AQICN World Air Quality Index API, TanStack Query for state management, Real-time data synchronization
+                          Weather API, TanStack Query for state management, Real-time data synchronization
                         </div>
                       </div>
                       <div className="p-3 bg-gray-50 rounded-lg">

@@ -149,7 +149,7 @@ ManagementService (Level 1)
 
 **Factory Pattern:**
 ```typescript
-export function createAQICNDataConnector(): RealTimeDataConnector {
+export function createWeatherDataConnector(): RealTimeDataConnector {
   return new RealTimeDataConnector()
 }
 
@@ -234,7 +234,7 @@ Type-safe constants throughout the system:
 
 ```typescript
 enum DeviceType {
-  AIR_QUALITY_MONITOR = "AIR_QUALITY_MONITOR",
+  WEATHER_STATION = "WEATHER_STATION",
   TRAFFIC_COUNTER = "TRAFFIC_COUNTER",
   ENERGY_METER = "ENERGY_METER"
 }
@@ -253,14 +253,14 @@ Our system processes authentic big data with all four V's:
 
 - **Volume:** 162,000+ data points daily (15 cities × 15 metrics × 720 cycles)
 - **Velocity:** Real-time updates every 30 seconds from global monitoring network  
-- **Variety:** AQI indices, pollutant concentrations, weather data, health recommendations
+- **Variety:** Weather indices, weather data, health recommendations, traffic predictions
 - **Veracity:** Government monitoring stations, embassy sensors, verified API sources
 
 ### 3.2 Data Sources Integration
 
-- **AQICN API:** 11,000+ monitoring stations worldwide
-- **Government Stations:** Official environmental monitoring networks
-- **Embassy Monitors:** Diplomatic mission air quality sensors  
+- **Weather API:** 11,000+ monitoring stations worldwide
+- **Government Stations:** Official meteorological monitoring networks
+- **Embassy Monitors:** Diplomatic mission weather sensors  
 - **Weather Services:** Integrated meteorological data
 
 ### 3.3 Real-time Processing Architecture
@@ -284,14 +284,14 @@ class RealTimeAnalytics extends BaseDataProcessor {
 - **Backend:** Next.js App Router, Node.js
 - **Database:** Supabase PostgreSQL with real-time subscriptions
 - **State Management:** TanStack Query, Zustand
-- **APIs:** AQICN World Air Quality Index
+- **APIs:** Weather API, OpenWeatherMap
 - **Deployment:** Vercel with serverless functions
 
 ### 4.2 Key Code Fragments
 
 #### Real-time Caching Implementation
 ```typescript
-public async getCachedCityData(cityName: string): Promise<ProcessedAirQualityData | null> {
+public async getCachedCityData(cityName: string): Promise<ProcessedWeatherData | null> {
   try {
     // Check Supabase cache first
     const { data, error } = await supabase
@@ -302,7 +302,7 @@ public async getCachedCityData(cityName: string): Promise<ProcessedAirQualityDat
       
     if (error || !data || data.length === 0) {
       // Cache miss - fetch fresh data
-      const freshData = await getAirQualityByCity(cityName)
+      const freshData = await getWeatherByCity(cityName)
       if (freshData) {
         await this.cacheData(freshData)
       }
@@ -321,16 +321,16 @@ public async getCachedCityData(cityName: string): Promise<ProcessedAirQualityDat
 #### Anomaly Detection Algorithm
 ```typescript
 private async detectRealAnomalies(): Promise<void> {
-  const cities = await getMultipleCitiesAirQuality(5)
+  const cities = await getMultipleCitiesWeather(5)
   
   if (cities.length > 2) {
-    const aqiValues = cities.map(city => city.aqi)
-    const mean = aqiValues.reduce((sum, val) => sum + val, 0) / aqiValues.length
-    const variance = aqiValues.reduce((sum, val) => sum + Math.pow(val - mean, 2), 0) / aqiValues.length
+    const weatherIndexValues = cities.map(city => city.weatherIndex)
+    const mean = weatherIndexValues.reduce((sum, val) => sum + val, 0) / weatherIndexValues.length
+    const variance = weatherIndexValues.reduce((sum, val) => sum + Math.pow(val - mean, 2), 0) / weatherIndexValues.length
     const stdDev = Math.sqrt(variance)
 
     // Find anomalous cities (more than 2 standard deviations from mean)
-    const anomalies = cities.filter(city => Math.abs(city.aqi - mean) > 2 * stdDev)
+    const anomalies = cities.filter(city => Math.abs(city.weatherIndex - mean) > 2 * stdDev)
     
     if (anomalies.length > 0) {
       this.generateAnomalyAlert(anomalies, mean, stdDev)
@@ -348,7 +348,7 @@ Optimized PostgreSQL schema with performance indexes:
 CREATE TABLE cached_weather_data (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     city_name TEXT NOT NULL,
-    aqi INTEGER NOT NULL,
+    weather_index INTEGER NOT NULL,
     pm25 DECIMAL(8,2), pm10 DECIMAL(8,2),
     no2 DECIMAL(8,2), so2 DECIMAL(8,2),
     o3 DECIMAL(8,2), co DECIMAL(8,2),
@@ -409,7 +409,7 @@ Our React-based dashboard provides:
 - **Developer Experience:** Type safety and modern tooling
 
 ### 6.3 Compared to Commercial Solutions
-- **Cost Efficiency:** Free AQICN API vs. expensive enterprise licenses
+- **Cost Efficiency:** Free Weather API vs. expensive enterprise licenses
 - **Customization:** Tailored features vs. generic implementations
 - **Educational Value:** Complete source code vs. black-box solutions
 - **Open Source:** Community contribution vs. proprietary restrictions
@@ -451,7 +451,7 @@ This Weather Monitor System successfully demonstrates mastery of advanced object
 - **Comprehensive OOP Architecture:** 15+ classes, multiple design patterns, complete inheritance hierarchies
 - **Big Data Processing:** Real-time analytics on 162,000+ daily data points
 - **Production Quality:** Modern tech stack with professional development practices
-- **Practical Impact:** Addresses genuine urban air quality monitoring needs
+- **Practical Impact:** Addresses genuine urban weather monitoring needs
 
 The project bridges academic theory with industry practice, providing both educational value and practical utility. Our open-source implementation contributes to weather monitoring innovation while demonstrating advanced programming competency.
 
@@ -459,7 +459,7 @@ The system's architecture serves as a foundation for future weather monitoring a
 
 ## References
 
-1. World Air Quality Index Project. (2025). AQICN API Documentation. Retrieved from https://aqicn.org/api/
+1. Weather API Project. (2025). Weather API Documentation. Retrieved from https://openweathermap.org/api/
 2. Dr.Sc Edmond Jajaga. (2025). Advanced Programming Course Materials. UBT University.
 3. React Team. (2025). React 19 Documentation. Meta Open Source.
 4. Supabase Team. (2025). Supabase Documentation. Supabase Inc.

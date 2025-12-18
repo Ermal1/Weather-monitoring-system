@@ -1,33 +1,54 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { getMultipleCitiesWeather } from '@/app/bigdata/WeatherQueries'
+import { getGlobalWeatherInsights, getWeatherByCity, getMultipleCitiesWeather } from '@/app/bigdata/WeatherQueries'
 
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url)
-    const limit = parseInt(searchParams.get('limit') || '6')
-    
-    const weatherData = await getMultipleCitiesWeather(limit)
-    
-    if (!weatherData || weatherData.length === 0) {
-      return NextResponse.json(
-        { error: 'No weather data available' },
-        { status: 404 }
-      )
+    const type = searchParams.get('type')
+    const city = searchParams.get('city')
+    const limit = searchParams.get('limit')
+
+    // Handle different query types
+    if (type === 'global-insights') {
+      const insights = await getGlobalWeatherInsights()
+      return NextResponse.json({
+        success: true,
+        data: insights
+      })
     }
 
-    return NextResponse.json(weatherData)
+    if (type === 'city' && city) {
+      const weather = await getWeatherByCity(city)
+      return NextResponse.json({
+        success: true,
+        data: weather
+      })
+    }
+
+    if (type === 'multiple-cities') {
+      const limitNum = limit ? parseInt(limit, 10) : 15
+      const weather = await getMultipleCitiesWeather(limitNum)
+      return NextResponse.json({
+        success: true,
+        data: weather
+      })
+    }
+
+    // Default: return global insights
+    const insights = await getGlobalWeatherInsights()
+    return NextResponse.json({
+      success: true,
+      data: insights
+    })
+
   } catch (error) {
-    console.error('Error fetching weather data:', error)
-    
+    console.error('Error in weather API route:', error)
     return NextResponse.json(
-      { 
-        error: 'Failed to fetch weather data',
-        details: error instanceof Error ? error.message : 'Unknown error'
+      {
+        success: false,
+        error: error instanceof Error ? error.message : 'Failed to fetch weather data'
       },
       { status: 500 }
     )
   }
 }
-
-
-
