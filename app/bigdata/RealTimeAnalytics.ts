@@ -240,64 +240,28 @@ export class RealTimeAnalytics {
     data: ProcessedWeatherData
   ): Promise<void> {
     try {
-      // Use weather_index (required)
-      const weatherIndex = data.weatherIndex ? Number(data.weatherIndex) : 50;
-      
-      const cacheEntry = {
-        city_name: cityName || "Unknown",
-        weather_index: weatherIndex, // Required field - using aqi value
-        temperature: data.temperature ? Number(data.temperature) : 20, // Required
-        humidity: Math.floor(data.humidity ? data.humidity : 65), // Required
-        precipitation: data.precipitation ? Number(data.precipitation) : 0, // Required with default
-        wind_speed: data.windSpeed ? Number(data.windSpeed) : 15, // Required
-        pressure: data.pressure ? Number(data.pressure) : 1013, // Required
-        weather_condition: data.weatherCondition || "Clear", // Required
-        feels_like: data.feelsLike ? Number(data.feelsLike) : null,
-        visibility: data.visibility ? Number(data.visibility) : null,
-        uv_index: data.uvIndex || null,
-        latitude: Number(data.latitude) || 0.0, // Required
-        longitude: Number(data.longitude) || 0.0, // Required
-        // Legacy fields for backward compatibility
-        pm25: Number(data.pm25) || null,
-        pm10: Number(data.pm10) || null,
-        no2: Number(data.no2) || null,
-        so2: Number(data.so2) || null,
-        o3: Number(data.o3) || null,
-        co: Number(data.co) || null,
-        dominant_pollutant: data.dominantPollutant || "pm25",
-        health_level: data.healthLevel || "Moderate", // Required
-        api_source: data.apiSource || "MULTI_SOURCE_REAL_TIME",
-        timestamp: data.timestamp || new Date().toISOString(), // Required
-      };
+      // Use API endpoint for server-side caching (avoids 401 errors from client-side inserts)
+      const response = await fetch("/api/weather", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          cityName,
+          data,
+        }),
+      });
 
-      if (
-        !cacheEntry.city_name ||
-        !cacheEntry.weather_index ||
-        !cacheEntry.temperature ||
-        !cacheEntry.humidity ||
-        !cacheEntry.wind_speed ||
-        !cacheEntry.pressure ||
-        !cacheEntry.weather_condition ||
-        !cacheEntry.latitude ||
-        !cacheEntry.longitude ||
-        !cacheEntry.health_level ||
-        !cacheEntry.timestamp
-      ) {
-        console.warn(`Skipping cache for ${cityName}: missing required fields`);
-        return;
-      }
-
-      const { error } = await supabase
-        .from("cached_weather_data")
-        .insert(cacheEntry);
-
-      if (error) {
-        console.warn("Failed to cache to Supabase:", error.message);
-        console.warn("Data being inserted:", cacheEntry);
-      } else {
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        console.warn(
+          `Failed to cache ${cityName} to Supabase:`,
+          errorData.error || response.statusText
+        );
       }
     } catch (error) {
-      console.warn("Supabase caching error:", error);
+      // Non-blocking: log error but don't throw to prevent breaking analytics
+      console.warn(`Supabase caching error for ${cityName}:`, error);
     }
   }
 

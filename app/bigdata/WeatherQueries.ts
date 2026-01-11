@@ -179,24 +179,35 @@ export async function getMultipleCitiesWeather(limit: number = 15): Promise<Proc
 
 export async function getGlobalWeatherInsights() {
   try {
-    debugger;
     // Only use Supabase on server-side (in API routes or server components)
     if (typeof window === 'undefined') {
       const { data: cachedData, error } = await supabase
         .from("cached_weather_data")
-        .select("city_name, temperature, humidity, weather_index, health_level")
+        .select("city_name, temperature, humidity, weather_index, health_level, cached_at")
         .order("cached_at", { ascending: false })
       
       console.log("cachedData", cachedData);
       
       if (!error && cachedData && cachedData.length > 0) {
-        const totalTemp = cachedData.reduce((sum: number, city: any) => sum + (city.temperature || 20), 0)
-        const averageTemp = Math.round(totalTemp / cachedData.length)
-        const citiesWithAlerts = cachedData.filter((city: any) => 
+        // Deduplicate by city_name, keeping the most recent entry for each city
+        const cityMap = new Map<string, any>()
+        for (const city of cachedData) {
+          const cityName = city.city_name
+          if (!cityMap.has(cityName) || 
+              new Date(city.cached_at) > new Date(cityMap.get(cityName).cached_at)) {
+            cityMap.set(cityName, city)
+          }
+        }
+        const uniqueCities = Array.from(cityMap.values())
+        
+        const totalTemp = uniqueCities.reduce((sum: number, city: any) => sum + (city.temperature || 20), 0)
+        const averageTemp = Math.round(totalTemp / uniqueCities.length)
+        const citiesWithAlerts = uniqueCities.filter((city: any) => 
           city.weather_index > 100 || (city.temperature && (city.temperature > 35 || city.temperature < -10))
         ).length
 
-        const sortedByTemp = [...cachedData].sort((a: any, b: any) => 
+        // Sort by actual temperature (ascending: coolest first, warmest last)
+        const sortedByTemp = [...uniqueCities].sort((a: any, b: any) => 
           (a.temperature || 20) - (b.temperature || 20)
         )
         const coolestCity = { 
@@ -208,26 +219,26 @@ export async function getGlobalWeatherInsights() {
           temperature: sortedByTemp[sortedByTemp.length - 1].temperature || 20 
         }
 
-        console.log(`✅ Global weather insights from ${cachedData.length} cities: avg temp ${averageTemp}°C`)
+        console.log(`✅ Global weather insights from ${uniqueCities.length} cities: avg temp ${averageTemp}°C, coolest: ${coolestCity.name} (${coolestCity.temperature}°C), warmest: ${warmestCity.name} (${warmestCity.temperature}°C)`)
         
         return {
-          totalCitiesMonitored: cachedData.length,
+          totalCitiesMonitored: uniqueCities.length,
           averageTemperature: averageTemp,
           citiesWithAlerts,
           coolestCity: { name: coolestCity.name, temperature: coolestCity.temperature },
           warmestCity: { name: warmestCity.name, temperature: warmestCity.temperature },
-          dataVolume: cachedData.length * 7, 
+          dataVolume: uniqueCities.length * 7, 
           countriesRepresented: 19 
         }
       }
     }
 
     console.log(`🌍 Generating weather insights from MultiCityDataConnector...`)
-    const insights = await multiCityConnector.getGlobalInsights()
+    // Fetch actual city data to get real temperatures
+    const cityData = await multiCityConnector.fetchMultipleCitiesData(20)
     
-    if (!insights) {
-      // Return default insights if no data is available
-      console.warn('⚠️ No insights available, returning default values')
+    if (!cityData || cityData.length === 0) {
+      console.warn('⚠️ No city data available, returning default values')
       return {
         totalCitiesMonitored: 0,
         averageTemperature: 20,
@@ -239,15 +250,37 @@ export async function getGlobalWeatherInsights() {
       }
     }
     
-    // Transform to weather-focused insights
+    // Calculate actual statistics from real temperature data
+    const totalTemp = cityData.reduce((sum, city) => sum + (city.temperature || 20), 0)
+    const averageTemp = Math.round(totalTemp / cityData.length)
+    const citiesWithAlerts = cityData.filter(city => 
+      (city.temperature && (city.temperature > 35 || city.temperature < -10)) ||
+      (city.weatherIndex || city.aqi || 50) > 100
+    ).length
+    
+    // Sort by actual temperature (ascending: coolest first, warmest last)
+    const sortedByTemp = [...cityData].sort((a, b) => 
+      (a.temperature || 20) - (b.temperature || 20)
+    )
+    const coolestCity = {
+      name: sortedByTemp[0].location,
+      temperature: sortedByTemp[0].temperature || 20
+    }
+    const warmestCity = {
+      name: sortedByTemp[sortedByTemp.length - 1].location,
+      temperature: sortedByTemp[sortedByTemp.length - 1].temperature || 20
+    }
+    
+    console.log(`✅ Global weather insights from ${cityData.length} cities: avg temp ${averageTemp}°C, coolest: ${coolestCity.name} (${coolestCity.temperature}°C), warmest: ${warmestCity.name} (${warmestCity.temperature}°C)`)
+    
     return {
-      totalCitiesMonitored: insights.totalCitiesMonitored,
-      averageTemperature: Math.round(20 + (insights.averageAQI * 0.1)),
-      citiesWithAlerts: insights.citiesWithAlerts,
-      coolestCity: { name: insights.bestCity.name, temperature: Math.round(15 + (((insights.bestCity as any).weatherIndex || (insights.bestCity as any).aqi || 50) * 0.1)) },
-      warmestCity: { name: insights.worstCity.name, temperature: Math.round(25 + (((insights.worstCity as any).weatherIndex || (insights.worstCity as any).aqi || 50) * 0.1)) },
-      dataVolume: insights.dataVolume,
-      countriesRepresented: insights.countriesRepresented
+      totalCitiesMonitored: cityData.length,
+      averageTemperature: averageTemp,
+      citiesWithAlerts,
+      coolestCity: { name: coolestCity.name, temperature: coolestCity.temperature },
+      warmestCity: { name: warmestCity.name, temperature: warmestCity.temperature },
+      dataVolume: cityData.length * 7,
+      countriesRepresented: [...new Set(cityData.map(c => c.country))].length
     }
   } catch (error) {
     console.error('Error getting global weather insights:', error)
